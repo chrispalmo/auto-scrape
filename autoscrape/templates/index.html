@@ -1,11 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="content-section">
-    <form method="POST" action="">
-        {{ form.hidden_tag() }}
-        <div class="form-group">
-            {{ form.submit(class="btn btn-outline-info") }}
-        </div>
-    </form>
+    <a href='{{ url_for('test_scrape') }}' class="btn btn-dark" role="button">Start Test Scrape</a>
 </div>
 {% endblock %}
