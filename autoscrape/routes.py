@@ -3,7 +3,7 @@ from autoscrape.forms import TestScrapeForm
 from autoscrape import app
 
 
-@app.route("/")
+@app.route("/", methods=['POST', 'GET'])
 def home():
-    form = TestScrapeForm
-    return render_template('index.html')
+    form = TestScrapeForm()
+    return render_template('index.html', form=form)

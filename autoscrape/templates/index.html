@@ -1,4 +1,11 @@
 {% extends "layout.html" %}
 {% block content %}
-HELLO WORLD
+<div class="content-section">
+    <form method="POST" action="">
+        {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.submit(class="btn btn-outline-info") }}
+        </div>
+    </form>
+</div>
 {% endblock %}
