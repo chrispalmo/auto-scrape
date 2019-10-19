@@ -1,5 +1,5 @@
 from flask import render_template, url_for, flash
-from autoscrape import app
+from autoscrape import app, dev_os
 
 
 @app.route("/", methods=['GET'])
@@ -9,4 +9,4 @@ def home():
 
 @app.route("/test_scrape")
 def test_scrape():
-    return render_template('test_scrape.html')
+    return render_template('test_scrape.html', dev_os=dev_os)
