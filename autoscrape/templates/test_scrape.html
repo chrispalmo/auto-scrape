@@ -3,9 +3,15 @@
 <div class="content-section">
     <div>
         <h1>Test Scrape Results</h1>
-        <a href='{{ url_for('test_scrape') }}' class="btn btn-dark" role="button">Run Scrape Again</a>
+        <a href="{{ url_for('test_scrape') }}" class="btn btn-dark" role="button">Run Scrape Again</a>
         <div>
-            <p>{% if scraper_output %}{{ scraper_output }}{% endif %}</p>
+            <p>
+                {% if scraper_output %}
+                {% for element in scraper_output %}
+                {{ element }}<br>
+                {% endfor %}
+                {% endif %}
+            </p>
         </div>
     </div>
 </div>
