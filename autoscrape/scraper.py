@@ -2,8 +2,11 @@ from selenium import webdriver
 import time
 import datetime
 
-def test_scrape():
-    driver = webdriver.Chrome('./chromedriver.exe')
+def test_scrape(agent_os):
+    if agent_os == 'macos':
+        driver = webdriver.Chrome('./autoscrape/chromedriver')
+    elif agent_os == 'windows':
+        driver = webdriver.Chrome('./autoscrape/chromedriver.exe')
     driver.get("https://news.ycombinator.com/")
     time.sleep(1)
     print("scraping https://news.ycombinator.com/")
