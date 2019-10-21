@@ -1,4 +1,4 @@
-from flask import render_template, url_for, flash, request
+from flask import render_template, url_for, flash
 from autoscrape import app, scraper
 
 
@@ -9,6 +9,7 @@ def home():
 
 @app.route("/test_scrape")
 def test_scrape():
-    agent_os = request.user_agent.platform
-    scraper_output = scraper.test_scrape(agent_os)
-    return render_template('test_scrape.html', agent_os=agent_os, scraper_output=scraper_output)
+		scraper_session = scraper.Scraper()
+		scraper_output = scraper_session.test_scrape()
+		scraper_session.quit()
+		return render_template('test_scrape.html', scraper_output=scraper_output)

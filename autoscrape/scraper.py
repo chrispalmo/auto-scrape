@@ -1,35 +1,29 @@
+from flask import request
 from selenium import webdriver
 import time
 import datetime
 
-def test_scrape(agent_os):
-    if agent_os == 'macos':
-        driver = webdriver.Chrome('./autoscrape/chromedriver')
-    elif agent_os == 'windows':
-        driver = webdriver.Chrome('./autoscrape/chromedriver.exe')
-    driver.get("https://news.ycombinator.com/")
-    time.sleep(1)
-    print("scraping https://news.ycombinator.com/")
 
-    # username_field = driver.find_element_by_xpath('//input[@id="Email"]')
-    # username_field.click()
-    # username_field.send_keys(username)
-    
-    try:
-        print("scraping...")
-        posts= driver.find_elements_by_class_name("athing")
-        return [post.text for post in posts]
+class Scraper():
 
-    except Exception as e:
-        print("error:",e)
+    def __init__(self):
+        agent_os = request.user_agent.platform
+        if agent_os == 'windows':
+            self.driver = webdriver.Chrome('./autoscrape/chromedriver.exe')
+        else:
+            self.driver = webdriver.Chrome('./autoscrape/chromedriver')
 
-    driver.close()
+    def test_scrape(self):
+        print("scraping https://news.ycombinator.com/")
+        self.driver.get("https://news.ycombinator.com/")
+        time.sleep(1)
+        try:
+            print("scraping...")
+            posts = self.driver.find_elements_by_class_name("athing")
+            return [post.text for post in posts]
 
-def timestamp():
-    from datetime import datetime
-    datetime.now().strftime("%Y%m%d %H:%M:%S")
+        except Exception as e:
+            return e
 
-if __name__ == '__main__':
-    test_scrape()
-
-
+    def quit(self):
+        self.driver.quit()
