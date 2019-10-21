@@ -18,10 +18,7 @@ def test_scrape(agent_os):
     try:
         print("scraping...")
         posts= driver.find_elements_by_class_name("athing")
-        post_list = []
-        for post in posts:
-            post_list.append(post.text)
-        return post_list
+        return [post.text for post in posts]
 
     except Exception as e:
         print("error:",e)
