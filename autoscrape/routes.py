@@ -2,7 +2,7 @@ from flask import render_template, url_for, flash
 from autoscrape import app, scraper
 
 
-@app.route("/", methods=['GET'])
+@app.route("/")
 def home():
     return render_template('index.html')
 
