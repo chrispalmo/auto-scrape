@@ -23,7 +23,6 @@ def create_session():
 		#first create 
 		sessions[session_id] = "Initializing session..."
 		sessions[session_id] = scraper.Scraper(session_id)
-		scraper
 		return f"Scraper session {session_id} has started. easy-scrape is currently running {len(sessions)} out of a maximum capacity of {max_sessions} concurrent sessions. Check back soon for results, or watch the progress log."
 	else:
 		return f"Sorry, all {max_sessions} of our scrapers are busy -  please try again later!"
