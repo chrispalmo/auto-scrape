@@ -8,4 +8,4 @@ db = SQLAlchemy(app)
 sessions = {}
 max_sessions = 3
 
-from autoscrape import routes, scraper, helpers
+from autoscrape import routes, scraper, helpers, models

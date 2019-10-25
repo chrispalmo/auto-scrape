@@ -1,6 +1,8 @@
 from flask import render_template, url_for, flash
+from flask_sqlalchemy import SQLAlchemy
 from autoscrape import app, scraper, sessions, max_sessions, helpers
 from copy import copy
+
 
 @app.route("/")
 def home():
@@ -55,5 +57,3 @@ def clear_all_sessions():
 		return f"All sessions have been destroyed."
 	except Exception as e:
 		return str(e)
-
-
