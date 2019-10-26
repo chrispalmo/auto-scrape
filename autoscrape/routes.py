@@ -1,7 +1,6 @@
 from flask import render_template, url_for, flash
-from flask_sqlalchemy import SQLAlchemy
 from autoscrape import app, scraper, sessions, max_sessions, helpers, db
-from autoscrape.models import TestDBClass, TestDBClass2, TestDBClass3
+from autoscrape.models import TestDBClass
 from copy import copy
 
 
@@ -14,13 +13,13 @@ def home():
 def test_scrape():
 	scraper_session = scraper.Scraper()
 	scrape_url = "https://news.ycombinator.com/"
-	filter_query1 = "athing"
-	scraper_output = scraper_session.test_scrape(scrape_url, filter_query1)
+	scrape_query1 = "athing"
+	scraper_output = scraper_session.test_scrape(scrape_url, scrape_query1)
 	for element in scraper_output:
-		db.session.add(TestDBClass3(result=element, url=scrape_url, filter_query1=filter_query1))
+		db.session.add(TestDBClass(result=element, scrape_url=scrape_url, scrape_query1=scrape_query1))
 	db.session.commit()
 	page_output = []
-	for index in db.session.query(TestDBClass3):
+	for index in db.session.query(TestDBClass):
 		page_output.append(index)
 	scraper_session.quit()
 	return render_template('test_scrape.html', page_output=page_output)

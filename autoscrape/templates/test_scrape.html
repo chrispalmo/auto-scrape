@@ -5,17 +5,31 @@
         <h1>Test Scrape Results</h1>
         <a href="{{ url_for('test_scrape') }}" class="btn btn-dark" role="button">Run Scrape Again</a>
         <div>
-            <p>
-                {% if scraper_output %}
-                {% for element in scraper_output %}
-                {{ element }}<br>
-                {% endfor %}
-                {% endif %}
-            </p>
-            <p>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">URL</th>
+                    <th scope="col">Scrape Query</th>
+                    <th scope="col">Result</th>
+                    <th scope="col">Date Scraped</th>
+                </tr>
+                </thead>
+                <tbody>
                 {% for element in page_output %}
-                {{ element }}<br>
+                <tr>
+                    <th scope="row">{{ element.id }}</th>
+                    <td>{{ element.scrape_url }}</td>
+                    <td>{{ element.scrape_query1 }}</td>
+                    <td>{{ element.result }}</td>
+                    <td>{{ element.date_scraped }}</td>
+                </tr>
                 {% endfor %}
+                </tbody>
+            </table>
+            {% for element in page_output %}
+            {{ element.id }}<br>
+            {% endfor %}
             </p>
         </div>
     </div>
