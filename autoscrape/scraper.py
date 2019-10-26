@@ -16,13 +16,13 @@ class Scraper():
         self.session_id = session_id
         self.sessions = sessions
 
-    def test_scrape(self):
-        print("scraping https://news.ycombinator.com/")
-        self.driver.get("https://news.ycombinator.com/")
+    def test_scrape(self, scrape_url, filter_query1):
+        print(scrape_url)
+        self.driver.get(scrape_url)
         time.sleep(1)
         try:
             print("scraping...")
-            posts = self.driver.find_elements_by_class_name("athing")
+            posts = self.driver.find_elements_by_class_name(filter_query1)
             return [post.text for post in posts]
 
         except Exception as e:
