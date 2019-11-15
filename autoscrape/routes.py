@@ -7,11 +7,11 @@ from autoscrape.models import TestDBClass
 
 @app.route("/")
 def home():
-	return render_template('index.html')
+	return redirect(url_for("dashboard"))
 
 @app.route("/dashboard")
 def dashboard():
-	return render_template('dashboard.html', sessions=sessions, max_sessions=max_sessions)
+	return render_template('dashboard.html', sessions=sessions, max_sessions=max_sessions, number_of_sessions=len(sessions))
 
 @app.route("/test_scrape")
 def test_scrape():
