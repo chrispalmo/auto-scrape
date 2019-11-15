@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+	<h1>Dashboard</h1>
+	<br/>
+	<hr/>
+	<h2>Active Sessions</h2>
+	{% if sessions %}
+		<table class="table">
+		Currently running X out of a maximum capacity of {{ max_sessions }} concurrent sessions.
+		<br/>
+		<thead>
+			<tr>
+			    <th scope="col">Session ID</th>
+			    <th scope="col">Description</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for session_id in sessions %}
+		<tr>
+		    <th scope="row">{{ session_id }}</th>
+		    <td>Just another test scraper</td>
+		    <td>
+		    	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">View Log</a>
+		  	</td>
+		    <td>
+		    	<a href="{{ url_for('destroy_session', session_id=session_id) }}" class="btn btn-danger" role="button">Destroy</a>
+		    </td>
+		</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	{% else %}
+		<div>There are no active sessions</div>
+	{% endif %}
+	<hr/>
+	<a href="{{ url_for('test_scrape') }}" class="btn btn-dark" role="button">test_scrape</a>
+	<a href="{{ url_for('create_session') }}" class="btn btn-dark" role="button">create_session</a>
+	<a href="{{ url_for('destroy_all_sessions') }}" class="btn btn-dark" role="button">destroy_all_sessions</a>
+</div>
+{% endblock %}
