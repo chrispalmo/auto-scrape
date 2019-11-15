@@ -28,9 +28,6 @@ class Scraper():
         except Exception as e:
             return e
 
-    def quit(self):
-        self.driver.quit()
-
     def destroy(self):
         self.driver.quit()
         self.sessions.pop(self.session_id)
