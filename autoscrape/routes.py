@@ -1,9 +1,16 @@
 from copy import copy
 from secrets import token_hex
 from flask import render_template, url_for, flash, redirect
-from autoscrape import app, scraper, sessions, max_sessions, helpers, db
+from autoscrape import app, sessions, max_sessions, helpers, db
+'''
+from autoscrape.scraper import Scraper
+'''
+from autoscrape.scrapers import testscraper2
 from autoscrape.models import TestDBClass
 
+scrapers = {
+	"testScraper2": testscraper2.testScraper2
+}
 
 @app.route("/")
 def home():
@@ -13,9 +20,11 @@ def home():
 def dashboard():
 	return render_template('dashboard.html', sessions=sessions, max_sessions=max_sessions, number_of_sessions=len(sessions))
 
+'''
 @app.route("/test_scrape")
 def test_scrape():
-	scraper_session = scraper.Scraper()
+	session_id = token_hex(8)
+	scraper_session = Scraper(session_id)
 	scrape_url = "https://news.ycombinator.com/"
 	scrape_query1 = "athing"
 	scraper_output = scraper_session.test_scrape(scrape_url, scrape_query1)
@@ -25,23 +34,31 @@ def test_scrape():
 	page_output = []
 	for index in db.session.query(TestDBClass):
 		page_output.append(index)
-	scraper_session.quit()
+	scraper_session.destroy()
 	return render_template('test_scrape.html', page_output=page_output)
+'''
 
-@app.route("/create_session")
-def create_session():
-	if len(sessions) < max_sessions:
-		#random string
-		#session_id = helpers.random_string_of_numbers(16)
-		session_id = token_hex(8)
-		#first create a dummy entry to avoid multiple concurrent startups exceeding max session limit
-		sessions[session_id] = "Initializing session..."
-		sessions[session_id] = scraper.Scraper(session_id)
-		flash(f"Scraper session {session_id} has started.","success")
-		return redirect(url_for("dashboard"))
+@app.route("/create_session/<string:scraper_name>")
+def create_session(scraper_name):
+	print("***************")
+	print(scrapers)
+	print(scrapers.get(scraper_name))
+	print("***************")
+
+	Scraper = scrapers.get(scraper_name)
+	if Scraper:
+		if len(sessions) < max_sessions:
+			session_id = token_hex(8)
+			#first create a dummy entry to avoid multiple concurrent startups exceeding max session limit
+			sessions[session_id] = "Initializing session..."
+			sessions[session_id] = Scraper(session_id)
+			sessions[session_id].start()
+			flash(f"Scraper session {session_id} has started.","success")
+		else:
+			flash(f"Cannot create new session - All {max_sessions} scrapers are currently busy.", "danger")
 	else:
-		flash(f"Cannot create new session - All {max_sessions} scrapers are currently busy.", "danger")
-		return redirect(url_for("dashboard"))
+		flash(f"Cannot create session of {scraper_name} - that scraper does not exist!", "danger")
+	return redirect(url_for("dashboard"))
 
 @app.route("/view_sessions")
 def view_sessions():
