@@ -3,15 +3,15 @@ from inspect import currentframe
 from secrets import token_hex
 from time import sleep
 from selenium import webdriver
-from autoscrape import db, sessions
-from autoscrape.models import LogEntry
+from autoscrape import db, active_sessions
+from autoscrape.models import Session, LogEntry
 
 class Scraper():
 
     def __init__(self, session_id):
         self.session_id = session_id
-        self.log(f"Initializing session...")
-        self.sessions = sessions
+        self.log(f"Initializing session")
+        self.active_sessions = active_sessions
 
         agent_os = request.user_agent.platform
         if agent_os == 'windows':
@@ -23,7 +23,7 @@ class Scraper():
         self.driver.set_page_load_timeout(30)
         #max wait for page elements to load
         self.driver.implicitly_wait(30)
-        self.log(f"Session initialization complete.")
+        self.log(f"Initialization complete.")
 
     def test_scrape(self, url, filter_query1):
         print(url)
@@ -58,6 +58,12 @@ class Scraper():
         db.session.add(entry)
         db.session.commit()
 
-    def destroy(self):
+    def destroy(self, completed=True):
         self.driver.quit()
-        self.sessions.pop(self.session_id)
+        session = Session.query.filter_by(id=self.session_id).first()
+        if completed:
+            session.status = "Completed"
+        else:
+            session.status = "Aborted"
+        db.session.commit()
+        self.active_sessions.pop(self.session_id)

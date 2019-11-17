@@ -3,8 +3,10 @@
 <div class="content-section">
 	<h1>Session #{{session_id}} </h1>
 	<br/>
-	<hr/>
 	<h2>Event log</h2>
+	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Back</a>
+	<a href="{{ url_for('log', session_id=session_id) }}" class="btn btn-success" role="button">Refresh</a>
+	<a href="{{ url_for('destroy_session', session_id=session_id) }}" class="btn btn-danger" role="button">End Session</a>
 	{% if log_entries %}
 		<table class="table">
 		<thead>
@@ -26,6 +28,5 @@
 		<div>There are no logged event for this session.</div>
 	{% endif %}
 	<hr/>
-	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Back</a>
 </div>
 {% endblock %}

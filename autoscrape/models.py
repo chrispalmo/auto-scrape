@@ -3,16 +3,15 @@ from autoscrape import db
 
 class Session(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	status_active = db.Column(db.Boolean, unique=False, default=True)
-	status_completed = db.Column(db.Boolean, unique=False, default=False)
-	status_errors = db.Column(db.Boolean, unique=False, default=False) 
-	date = db.Column(db.DateTime, unique=False, default=datetime.utcnow)
+	status = db.Column(db.String, nullable=False, default="Active")
+	date_started = db.Column(db.DateTime, unique=False, default=datetime.utcnow)
+	date_stopped = db.Column(db.DateTime, unique=False)
 	description = db.Column(db.String, nullable=False)
 	scraper = db.Column(db.String, nullable=False)
 	logs = db.relationship('LogEntry', backref='session', lazy=True)
 
 	def __repr__(self):
-		return f"Session('id: {self.id}, description: {self.description}, date: {self.date}"
+		return f"Session('id: {self.id}, status: {self.status}, date_started: {self.date_started}, date_stopped: {self.date_stopped}, description: {self.description}, scraper: {self.scraper})"
 
 class LogEntry(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
