@@ -1,15 +1,15 @@
 from copy import copy
-from secrets import token_hex
+# from secrets import token_hex
 from flask import render_template, url_for, flash, redirect
 from autoscrape import app, sessions, max_sessions, helpers, db
 '''
 from autoscrape.scraper import Scraper
 '''
 from autoscrape.scrapers import testscraper2
-from autoscrape.models import TestDBClass
+from autoscrape.models import TestDBClass, Session, LogEntry
 
 scrapers = {
-	"testScraper2": testscraper2.testScraper2
+	"TestScraper2": testscraper2.TestScraper2
 }
 
 @app.route("/")
@@ -40,20 +40,20 @@ def test_scrape():
 
 @app.route("/create_session/<string:scraper_name>")
 def create_session(scraper_name):
-	print("***************")
-	print(scrapers)
-	print(scrapers.get(scraper_name))
-	print("***************")
-
 	Scraper = scrapers.get(scraper_name)
 	if Scraper:
 		if len(sessions) < max_sessions:
-			session_id = token_hex(8)
+			#Register the session in DB
+			session = Session(description=Scraper.description())
+			db.session.add(session)
+			db.session.commit()		
+			# session_id = token_hex(8)
+			#Create the session thread and store in process memory
 			#first create a dummy entry to avoid multiple concurrent startups exceeding max session limit
-			sessions[session_id] = "Initializing session..."
-			sessions[session_id] = Scraper(session_id)
-			sessions[session_id].start()
-			flash(f"Scraper session {session_id} has started.","success")
+			sessions[session.id] = "..."
+			sessions[session.id] = Scraper(session.id)
+			sessions[session.id].start()
+			flash(f"Scraper session {session.id} has started.","success")
 		else:
 			flash(f"Cannot create new session - All {max_sessions} scrapers are currently busy.", "danger")
 	else:
@@ -67,8 +67,8 @@ def view_sessions():
 @app.route("/destroy_session/<string:session_id>")
 def destroy_session(session_id):
 	try:
-		sessions[session_id].destroy()
-		flash(f"Session {session_id} has been destroyed.","success")
+		sessions[int(session_id)].destroy()
+		flash(f"Scraper session {session_id} has been destroyed.","success")
 	except Exception as e:
 		flash(f"Error: Session {session_id} does not exist!","danger")
 	return redirect(url_for('dashboard'))
