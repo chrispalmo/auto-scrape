@@ -2,40 +2,80 @@
 {% block content %}
 <div class="content-section">
 	<h1>Dashboard</h1>
-	<br/>
 	<hr/>
-	<h2>Active Sessions</h2>
-	{% if sessions %}
-		<table class="table">
-		Currently running {{ number_of_sessions }} out of a maximum capacity of {{ max_sessions }} concurrent sessions.
+	<a href="{{ url_for('create_session', scraper_name='TestScraper2') }}" class="btn btn-success" role="button">Start TestScraper2 <i class="glyphicon glyphicon-play"></i></a>
+	<hr/>
+	<h3>Active Sessions</h3>
+	{% if number_of_active_sessions != 0 %}
+		Currently running {{ number_of_active_sessions }} out of a maximum of {{ max_active_sessions }} concurrent sessions.
+		<br>
+		<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
+		<a href="{{ url_for('abort_all_active_sessions') }}" class="btn btn-danger" role="button">Abort All <i class="glyphicon glyphicon-stop"></i></a>
 		<br/>
+		<table class="table">
 		<thead>
 			<tr>
-			    <th scope="col">Session ID</th>
-			    <th scope="col">Description</th>
+			    <th scope="col">ID</th>
+			    <th scope="col">Started</th>
+			    <th scope="col">Scraper</th>
+			    <th scope="col">Status</th>
 			</tr>
 		</thead>
 		<tbody>
-		{% for session_id in sessions %}
+		{% for session in active_sessions %}
 		<tr>
-		    <th scope="row">{{ session_id }}</th>
-		    <td>Just another test scraper</td>
+		    <th scope="row">{{ session.id }}</th>
+		    <td>{{ session.date_started }}</td>
+		    <td>{{ session.scraper }}</td>
+		    <td>{{ session.status }}</td>
 		    <td>
-		    	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">View Log</a>
+		    	<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-search"></i></a>
 		  	</td>
 		    <td>
-		    	<a href="{{ url_for('destroy_session', session_id=session_id) }}" class="btn btn-danger" role="button">Destroy</a>
-		    </td>
+		    	<a href="{{ url_for('abort_session', session_id=session.id) }}" class="btn btn-danger" role="button"><i class="glyphicon glyphicon-stop"></i></a>
+		  	</td>
 		</tr>
 		{% endfor %}
 		</tbody>
 		</table>
 	{% else %}
-		<div>There are no active sessions</div>
+		<div>There are no active sessions.</div>
 	{% endif %}
 	<hr/>
-	<a href="{{ url_for('test_scrape') }}" class="btn btn-dark" role="button">test_scrape</a>
-	<a href="{{ url_for('create_session') }}" class="btn btn-dark" role="button">create_session</a>
-	<a href="{{ url_for('destroy_all_sessions') }}" class="btn btn-dark" role="button">destroy_all_sessions</a>
+	<h3>Past Sessions</h3>
+	{% if number_of_past_sessions != 0 %}
+		<br/>
+		<table class="table">
+		<thead>
+			<tr>
+			    <th scope="col">ID</th>
+			    <th scope="col">Stopped</th>
+			    <th scope="col">Scraper</th>
+			    <th scope="col">Status</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for session in past_sessions %}
+		<tr>
+		    <th scope="row">{{ session.id }}</th>
+		    <td>{{ session.date_stopped }}</td>
+		    <td>{{ session.scraper }}</td>
+		    <td>{{ session.status }}</td>
+		    <td>
+		    	<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-search"></i></a>
+		  	</td>
+		    <td>
+		    	<a href="#" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-cloud-download"></i></a>
+		  	</td>
+		    <td>
+		    	<a href="{{ url_for('delete_session_record', session_id=session.id) }}" class="btn btn-danger" role="button"><i class="glyphicon glyphicon-trash"></i></a>
+		  	</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	{% else %}
+		<div>There are no records of past sessions.</div>
+	{% endif %}
 </div>
 {% endblock %}
