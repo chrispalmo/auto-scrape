@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import request
 from inspect import currentframe
 from secrets import token_hex
@@ -63,7 +64,10 @@ class Scraper():
         session = Session.query.filter_by(id=self.session_id).first()
         if completed:
             session.status = "Completed"
+            self.log("Session completed.")
         else:
             session.status = "Aborted"
+            self.log("*** Session aborted ***")
+        session.date_stopped = datetime.utcnow()
         db.session.commit()
         self.active_sessions.pop(self.session_id)

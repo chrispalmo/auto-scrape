@@ -14,22 +14,25 @@ def home():
 
 @app.route("/dashboard")
 def dashboard():
-	# past_sessions = Session.query.filter_by(active=False)
 	active_sessions = Session.query.filter(Session.status=="Active").order_by(Session.date_started.desc())
 	past_sessions = Session.query.filter(Session.status!="Active").order_by(Session.date_stopped.desc())
-	print(active_sessions)
-	print(past_sessions)
 	return render_template('dashboard.html',
+		max_active_sessions=max_active_sessions,
 		active_sessions=active_sessions,
-		past_sessions=past_sessions,
 		number_of_active_sessions=active_sessions.count(),
-		max_active_sessions=max_active_sessions
+		past_sessions=past_sessions,
+		number_of_past_sessions=past_sessions.count()
 	)
 
 @app.route("/log/<int:session_id>")
 def log(session_id):
+	session = Session.query.get_or_404(session_id)
 	log_entries = LogEntry.query.filter_by(session_id=session_id).order_by(LogEntry.date.desc())
-	return render_template('log.html', session_id=session_id, log_entries=log_entries)
+	return render_template('log.html', 
+		session=session, 
+		log_entries=log_entries,
+		number_of_log_entries=log_entries.count()
+	)
 
 @app.route("/create_session/<string:scraper_name>")
 def create_session(scraper_name):
@@ -52,30 +55,37 @@ def create_session(scraper_name):
 		flash(f"Cannot create session of {scraper_name} - that scraper does not exist!", "danger")
 	return redirect(url_for("dashboard"))
 
-@app.route("/view_active_sessions")
-def view_active_sessions():
-	return(str(active_sessions))
-
-@app.route("/destroy_session/<string:session_id>")
-def destroy_session(session_id):
+@app.route("/abort_session/<string:session_id>")
+def abort_session(session_id):
 	try:
-		active_sessions[int(session_id)].destroy()
-		flash(f"Scraper session {session_id} has been destroyed.","success")
+		active_sessions[int(session_id)].destroy(completed=False)
+		flash(f"Scraper session {session_id} has been Aborted.","success")
 	except Exception as e:
-		flash(f"Error: Session {session_id} has already stopped or does not exist!","danger")
+		flash(f"Unable to abort session {session_id}. Session is no longer active or does not exist.","danger")
 	return redirect(url_for('dashboard'))
 
-@app.route("/destroy_all_active_sessions")
-def destroy_all_active_sessions():
+@app.route("/delete_session_record/<string:session_id>")
+def delete_session_record(session_id):
+	try:
+		Session.query.filter_by(id=session_id).delete()
+		LogEntry.query.filter_by(session_id=session_id).delete()
+		db.session.commit()
+		flash(f"Scraper {session_id} has been deleted.","success")
+	except Exception as e:
+		flash(f"Error ({e}): Session {session_id} could not be deleted.","danger")
+	return redirect(url_for('dashboard'))
+
+@app.route("/abort_all_active_sessions")
+def abort_all_active_sessions():
 	try:
 		#use shallow copy to break link back to active_sessions object
 		session_ids_to_destroy=[copy(session_id) for session_id in active_sessions.keys()]
 		for session_id in session_ids_to_destroy:
 			try:
-				active_sessions[session_id].destroy()
+				active_sessions[session_id].destroy(completed=False)
 			except Exception as e:
 				pass
-		flash("All active sessions have been destroyed.", "success")
+		flash("All active sessions have been aborted.", "success")
 	except Exception as e:
 		flash(str(e), "danger")
 	return redirect(url_for('dashboard'))
