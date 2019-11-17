@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+	<h1>Session #{{session_id}} </h1>
+	<br/>
+	<hr/>
+	<h2>Event log</h2>
+	{% if log_entries %}
+		<table class="table">
+		<thead>
+			<tr>
+			    <th scope="col">Time</th>
+			    <th scope="col">Event</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for entry in log_entries %}
+		<tr>
+		    <td scope="row">{{ entry.date }}</th>
+		    <td>{{ entry.message }}</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+	{% else %}
+		<div>There are no logged event for this session.</div>
+	{% endif %}
+	<hr/>
+	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Back</a>
+</div>
+{% endblock %}

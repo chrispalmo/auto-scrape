@@ -6,9 +6,9 @@
 	<hr/>
 	<h2>Active Sessions</h2>
 	{% if sessions %}
-		<table class="table">
-		Currently running {{ number_of_sessions }} out of a maximum capacity of {{ max_sessions }} concurrent sessions.
+		Currently running {{ number_of_sessions }} out of a maximum of {{ max_sessions }} concurrent sessions.
 		<br/>
+		<table class="table">
 		<thead>
 			<tr>
 			    <th scope="col">Session ID</th>
@@ -21,7 +21,7 @@
 		    <th scope="row">{{ session_id }}</th>
 		    <td>{{ sessions[session_id] }}</td>
 		    <td>
-		    	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">View Log</a>
+		    	<a href="{{ url_for('log', session_id=session_id) }}" class="btn btn-dark" role="button">View Log</a>
 		  	</td>
 		    <td>
 		    	<a href="{{ url_for('destroy_session', session_id=session_id) }}" class="btn btn-danger" role="button">Destroy</a>
