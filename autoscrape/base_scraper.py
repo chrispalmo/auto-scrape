@@ -38,16 +38,16 @@ class Scraper():
         try:
             func_name = currentframe().f_code.co_name
             self.log(f"""{func_name}("{query}")""")
-            self.driver.find_elements_by_xpath(query)
+            return self.driver.find_elements_by_xpath(query)
         except Exception as e:
             self.log(e)        
 
     def find_elements_by_class_name(self, query):
-        # try:
+        try:
             func_name = currentframe().f_code.co_name
             self.log(f"""{func_name}("{query}")""")
-            self.driver.find_elements_by_class_name(query)
-        # except Exception as e:
+            return self.driver.find_elements_by_class_name(query)
+        except Exception as e:
             self.log(e)
 
     def log(self, message):
