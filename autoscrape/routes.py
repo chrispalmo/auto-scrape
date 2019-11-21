@@ -53,7 +53,7 @@ def create_session(scraper_name):
 			flash(f"Cannot create new session - All {max_active_sessions} scrapers are currently busy.", "danger")
 	else:
 		flash(f"Cannot create session of {scraper_name} - that scraper does not exist!", "danger")
-	return redirect(url_for("dashboard"))
+	return redirect(url_for("log", session_id=session.id))
 
 @app.route("/abort_session/<string:session_id>")
 def abort_session(session_id):
