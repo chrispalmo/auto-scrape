@@ -26,17 +26,6 @@ class Scraper():
         self.driver.implicitly_wait(30)
         self.log(f"Initialization complete.")
 
-        print(url)
-        self.driver.get(url)
-        sleep(1)
-        try:
-            print("scraping...")
-            elements = self.driver.find_elements_by_class_name(filter_query1)
-            return [element.text for element in elements]
-
-        except Exception as e:
-            return e
-
     def get(self, url):
         try:
             func_name = currentframe().f_code.co_name
