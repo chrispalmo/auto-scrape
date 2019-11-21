@@ -11,7 +11,7 @@ class Scraper():
 
     def __init__(self, session_id):
         self.session_id = session_id
-        self.log(f"Initializing session")
+        self.log(f"Initializing session...")
         self.active_sessions = active_sessions
 
         agent_os = request.user_agent.platform
@@ -26,7 +26,6 @@ class Scraper():
         self.driver.implicitly_wait(30)
         self.log(f"Initialization complete.")
 
-    def test_scrape(self, url, filter_query1):
         print(url)
         self.driver.get(url)
         sleep(1)
@@ -41,23 +40,34 @@ class Scraper():
     def get(self, url):
         try:
             func_name = currentframe().f_code.co_name
-            self.log(f"{func_name}({url})")
+            self.log(f"""{func_name}("{url}")""")
             self.driver.get(url)
-        except Exception as e:
-            print(e)
-
-    def find_elements_by_class_name(self, query):
-        try:
-            func_name = currentframe().f_code.co_name
-            self.log(f"{func_name}({url})")
-            self.driver.find_elements_by_class_name(url)
         except Exception as e:
             self.log(e)
 
+    def find_elements_by_xpath(self, query):
+        try:
+            func_name = currentframe().f_code.co_name
+            self.log(f"""{func_name}("{query}")""")
+            self.driver.find_elements_by_xpath(query)
+        except Exception as e:
+            self.log(e)        
+
+    def find_elements_by_class_name(self, query):
+        # try:
+            func_name = currentframe().f_code.co_name
+            self.log(f"""{func_name}("{query}")""")
+            self.driver.find_elements_by_class_name(query)
+        # except Exception as e:
+            self.log(e)
+
     def log(self, message):
-        entry = LogEntry(message=message, session_id=self.session_id)
-        db.session.add(entry)
-        db.session.commit()
+        try:
+            entry = LogEntry(message=message, session_id=self.session_id)
+            db.session.add(entry)
+            db.session.commit()
+        except:
+            pass
 
     def destroy(self, completed=True):
         self.driver.quit()
