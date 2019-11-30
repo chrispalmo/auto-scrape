@@ -2,7 +2,7 @@ from copy import copy
 from flask import render_template, url_for, flash, redirect
 from autoscrape import app, active_sessions, max_active_sessions, helpers, db
 from autoscrape.scrapers import testscraper2
-from autoscrape.models import TestDBClass, Session, LogEntry
+from autoscrape.models import TestDBClass, Session, LogEntry, DataEntry
 
 scrapers = {
 	"TestScraper2": testscraper2.TestScraper2
@@ -27,10 +27,13 @@ def dashboard():
 	)
 
 
-@app.route("/session_data/<string:session_id>")
+@app.route("/session_data/<int:session_id>")
 def session_data(session_id):
 	session = Session.query.get_or_404(session_id)
-	return render_template('session_data.html', session=session)
+	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.desc())
+	return render_template('session_data.html',
+						   session=session,
+						   data_entries=data_entries)
 
 
 @app.route("/log/<int:session_id>")
