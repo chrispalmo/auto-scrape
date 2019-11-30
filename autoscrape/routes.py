@@ -8,9 +8,11 @@ scrapers = {
 	"TestScraper2": testscraper2.TestScraper2
 }
 
+
 @app.route("/")
 def home():
 	return redirect(url_for("dashboard"))
+
 
 @app.route("/dashboard")
 def dashboard():
@@ -24,6 +26,13 @@ def dashboard():
 		number_of_past_sessions=past_sessions.count()
 	)
 
+
+@app.route("/session_data/<string:session_id>")
+def session_data(session_id):
+	session = Session.query.get_or_404(session_id)
+	return render_template('session_data.html', session=session)
+
+
 @app.route("/log/<int:session_id>")
 def log(session_id):
 	session = Session.query.get_or_404(session_id)
@@ -33,6 +42,7 @@ def log(session_id):
 		log_entries=log_entries,
 		number_of_log_entries=log_entries.count()
 	)
+
 
 @app.route("/create_session/<string:scraper_name>")
 def create_session(scraper_name):
@@ -55,6 +65,7 @@ def create_session(scraper_name):
 		flash(f"Cannot create session of {scraper_name} - that scraper does not exist!", "danger")
 	return redirect(url_for("log", session_id=session.id))
 
+
 @app.route("/abort_session/<string:session_id>")
 def abort_session(session_id):
 	try:
@@ -63,6 +74,7 @@ def abort_session(session_id):
 	except Exception as e:
 		flash(f"Unable to abort session {session_id}. Session is no longer active or does not exist.","danger")
 	return redirect(url_for('dashboard'))
+
 
 @app.route("/delete_session_record/<string:session_id>")
 def delete_session_record(session_id):
@@ -74,6 +86,7 @@ def delete_session_record(session_id):
 	except Exception as e:
 		flash(f"Error ({e}): Session {session_id} could not be deleted.","danger")
 	return redirect(url_for('dashboard'))
+
 
 @app.route("/abort_all_active_sessions")
 def abort_all_active_sessions():

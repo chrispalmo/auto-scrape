@@ -17,6 +17,7 @@ class TestScraper2(Thread, base_scraper.Scraper):
 			#Get top YCHN posts
 			self.get("https://news.ycombinator.com/")
 			elements = self.find_elements_by_class_name('storylink')
+			self.save
 		except Exception as e:
 			self.log(e)
 		

@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="content-section">
+	<h1>Session #{{session.id}} </h1>
+	<br/>
+	<h2>Session Data</h2>
+	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Back</a>
+	<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
+	{% if session.status != "Active" %}
+		<a href="{{ url_for('delete_session_record', session_id=session.id) }}" class="btn btn-danger" role="button">Delete <i class="glyphicon glyphicon-trash"></i></a>
+	{% else %}
+		<a href="{{ url_for('abort_session', session_id=session.id) }}" class="btn btn-danger" role="button">Abort <i class="glyphicon glyphicon-stop"></i></a>
+	{% endif %}
+	{% if number_of_log_entries != 0 %}
+		<table class="table">
+		<thead>
+			<tr>
+			    <th scope="col">URL</th>
+			    <th scope="col">Timestamp</th>
+			    <th scope="col">Query</th>
+			    <th scope="col">Data 1</th>
+			    <th scope="col">Data 2</th>
+			</tr>
+		</thead>
+		<tbody>
+		{% for entry in REPLACE_THIS_WITH_SESSION_DATA_FROM_DATABASE %}
+		<tr>
+			    <td scope="col">REPLACE_THIS_WITH_URL_DATA</td>
+			    <td scope="col">REPLACE_THIS_WITH_TIMESTAMP_DATA</td>
+			    <td scope="col">REPLACE_THIS_WITH_QUERY_DATA</td>
+			    <td scope="col">REPLACE_THIS_WITH_QUERY_DATA_1</td>
+			    <td scope="col">REPLACE_THIS_WITH_QUERY_DATA_2</td>
+		</tr>
+		{% endfor %}
+		</tbody>
+		</table>
+		{% if session.status == "Active" %}
+			<hr>
+			<a href="{{ url_for('delete_session_record', session_id=session.id) }}" class="btn btn-danger" role="button">Force Delete <i class="glyphicon glyphicon-trash"></i></a>
+			<br>
+			<small class="text-muted m1-2">Warning - only use if session cannot be aborted and is not progressing! Deleting a session that has not reached completion without aborting the session can result in memory leaks.</small>
+		{% endif %}
+	{% else %}
+		<hr>
+		<div>There are no logged event for this session.</div>
+	{% endif %}
+	<hr/>
+</div>
+{% endblock %}

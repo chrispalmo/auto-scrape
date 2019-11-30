@@ -5,7 +5,8 @@ from secrets import token_hex
 from time import sleep
 from selenium import webdriver
 from autoscrape import db, active_sessions
-from autoscrape.models import Session, LogEntry
+from autoscrape.models import Session, LogEntry, DataEntry
+from sqlalchemy import exc
 
 class Scraper():
 
@@ -57,6 +58,22 @@ class Scraper():
             db.session.commit()
         except:
             pass
+
+    def save(self, query, element_1, element_2, element_3, element_4, element_5):
+        data_entry = DataEntry(query=query, element_1=element_1,
+                               element_2=element_2, element_3=element_3,
+                               element_4=element_4, element_5=element_5)
+        func_name = currentframe().f_code.co_name
+        try:
+            db.session.add(data_entry)
+            db.session.commit()
+            self.log(f"""{func_name}("{query}")""")
+        except exc.SQLAlchemyError as e:
+            db.session.rollback()
+            self.log(f"""{func_name}("{e}")""")
+        finally:
+            db.session.close()
+
 
     def destroy(self, completed=True):
         self.driver.quit()
