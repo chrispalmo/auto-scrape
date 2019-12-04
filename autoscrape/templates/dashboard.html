@@ -29,8 +29,8 @@
 		    <td>{{ session.scraper }}</td>
 		    <td>{{ session.status }}</td>
 		    <td>
-		    	<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-list-alt"></i></a>
-		  	</td>
+		    	<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-search"></i></a>
+				</td>
 		    <td>
 		    	<a href="{{ url_for('abort_session', session_id=session.id) }}" class="btn btn-danger" role="button"><i class="glyphicon glyphicon-stop"></i></a>
 		  	</td>
@@ -62,13 +62,13 @@
 		    <td>{{ session.scraper }}</td>
 		    <td>{{ session.status }}</td>
 		    <td>
-		    	<a href="{{ url_for('session_data', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-search"></i></a>
+		    	<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-search"></i></a>
 		  	</td>
 		    <td>
-		    	<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-list-alt"></i></a>
+		    	<a href="{{ url_for('session_data', session_id=session.id) }}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-list-alt"></i></a>
 		  	</td>
 		    <td>
-		    	<a href="#" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-cloud-download"></i></a>
+		    	<a href="{{ url_for('download_session_data', session_id=session.id)}}" class="btn btn-dark" role="button"><i class="glyphicon glyphicon-cloud-download"></i></a>
 		  	</td>
 		    <td>
 		    	<a href="{{ url_for('delete_session_record', session_id=session.id) }}" class="btn btn-danger" role="button"><i class="glyphicon glyphicon-trash"></i></a>
