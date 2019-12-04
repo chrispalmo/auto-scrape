@@ -1,12 +1,40 @@
 from copy import copy
-from flask import render_template, url_for, flash, redirect
-from autoscrape import app, active_sessions, max_active_sessions, helpers, db
+from datetime import datetime
+from flask import render_template, url_for, flash, redirect, Response
+from autoscrape import app, active_sessions, max_active_sessions, db
+from autoscrape.helpers import db_query_output_to_csv 
 from autoscrape.scrapers import testscraper2
 from autoscrape.models import TestDBClass, Session, LogEntry, DataEntry
 
 scrapers = {
 	"TestScraper2": testscraper2.TestScraper2
 }
+
+
+@app.route("/download/session_data/<int:session_id>")
+def download_session_data(session_id):
+	
+	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.asc())
+	csv = db_query_output_to_csv(
+
+		query_output=data_entries, 
+		columns_to_exclude=["_sa_instance_state", "id"])
+	return Response(
+		csv,
+		mimetype="text/csv",
+		headers={"Content-disposition":
+			f"attachment; filename={datetime.now().strftime('%Y%m%d_%H%M%S_')}_session_{session_id}.csv"})
+
+@app.route("/download/session_history")
+def download_session_history():
+	csv = db_query_output_to_csv(
+		query_output=Session.query.all(), 
+		columns_to_exclude=["_sa_instance_state", "id"])
+	return Response(
+		csv,
+		mimetype="text/csv",
+		headers={"Content-disposition":
+			f"attachment; filename={datetime.now().strftime('%Y%m%d_%H%M%S_')}sessions.csv"})
 
 
 @app.route("/")
@@ -33,17 +61,20 @@ def session_data(session_id):
 	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.desc())
 	return render_template('session_data.html',
 						   session=session,
-						   data_entries=data_entries)
+						   data_entries=data_entries,
+							data_entries_length=data_entries.count()
+	)
 
 
 @app.route("/log/<int:session_id>")
 def log(session_id):
 	session = Session.query.get_or_404(session_id)
 	log_entries = LogEntry.query.filter_by(session_id=session_id).order_by(LogEntry.date.desc())
+	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.desc())
 	return render_template('log.html', 
 		session=session, 
 		log_entries=log_entries,
-		number_of_log_entries=log_entries.count()
+		log_entries_length=log_entries.count()
 	)
 
 
@@ -64,6 +95,7 @@ def create_session(scraper_name):
 			flash(f"Scraper session {session.id} has started.","success")
 		else:
 			flash(f"Cannot create new session - All {max_active_sessions} scrapers are currently busy.", "danger")
+		return redirect(url_for("dashboard"))
 	else:
 		flash(f"Cannot create session of {scraper_name} - that scraper does not exist!", "danger")
 	return redirect(url_for("log", session_id=session.id))

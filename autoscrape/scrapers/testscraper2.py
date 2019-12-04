@@ -16,11 +16,15 @@ class TestScraper2(Thread, base_scraper.Scraper):
         # Scraping sequence goes here. Logging is taken care of by the base_scraper base class for standard browser functions.
         try:
             # Get top YCHN posts
-            self.get("https://news.ycombinator.com/")
+            url = "https://news.ycombinator.com/"
+            self.get(url)
             elements = self.find_elements_by_class_name('storylink')
             elements_text_list = [element.text for element in elements]
-            element_1_string = ';'.join(elements_text_list)
-            self.save(self.find_elements_by_class_name.__name__, 'storylink', 'https://news.ycombinator.com/', element_1_string)
+            elements_as_string = ';'.join(elements_text_list)
+            self.save(
+                'Post Titles', 
+                url,
+                elements_as_string)
         except Exception as e:
             self.log(e)
 

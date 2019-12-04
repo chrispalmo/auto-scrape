@@ -5,39 +5,31 @@
 	<br/>
 	<h2>Session Data</h2>
 	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Back</a>
-	<a href="{{ url_for('session_data', session_id=session.id) }}" class="btn btn-dark" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
 	{% if session.status != "Active" %}
+		<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button">View Log  <i class="glyphicon glyphicon-search"></i></a>
 		<a href="{{ url_for('delete_session_record', session_id=session.id) }}" class="btn btn-danger" role="button">Delete <i class="glyphicon glyphicon-trash"></i></a>
 	{% else %}
+		<a href="{{ url_for('session_data', session_id=session.id) }}" class="btn btn-dark" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
+		<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button">View Log  <i class="glyphicon glyphicon-search"></i></a>
 		<a href="{{ url_for('abort_session', session_id=session.id) }}" class="btn btn-danger" role="button">Abort <i class="glyphicon glyphicon-stop"></i></a>
 	{% endif %}
-	{% if number_of_log_entries != 0 %}
+	{% if data_entries_length != 0 %}
 		<table class="table">
 		<thead>
 			<tr>
-				<th scope="col">Timestamp</th>
-			    <th scope="col">URL</th>
-			    <th scope="col">Query Function</th>
-			    <th scope="col">Query Term</th>
-			    <th scope="col">Data 1</th>
-			    <th scope="col">Data 2</th>
-				<th scope="col">Data 3</th>
-				<th scope="col">Data 4</th>
-				<th scope="col">Data 5</th>
+			  <th scope="col">Timestamp</th>
+		    <th scope="col">URL</th>
+		    <th scope="col">Data Label</th>
+		    <th scope="col">Data</th>
 			</tr>
 		</thead>
 		<tbody>
 		{% for entry in data_entries %}
 		<tr>
-				<td scope="col">{{ entry.timestamp }}</td>
-			    <td scope="col">{{ entry.scrape_url }}</td>
-			    <td scope="col">{{ entry.scrape_function }}</td>
-			    <td scope="col">{{ entry.scrape_query }}</td>
-			    <td scope="col">{{ entry.element_1 }}</td>
-			    <td scope="col">{{ entry.element_2 }}</td>
-				<td scope="col">{{ entry.element_3 }}</td>
-				<td scope="col">{{ entry.element_4 }}</td>
-				<td scope="col">{{ entry.element_5 }}</td>
+			<td scope="col">{{ entry.timestamp }}</td>
+	    <td scope="col">{{ entry.url }}</td>
+	    <td scope="col">{{ entry.data_label }}</td>
+	    <td scope="col">{{ entry.data }}</td>
 		</tr>
 		{% endfor %}
 		</tbody>
@@ -50,7 +42,7 @@
 		{% endif %}
 	{% else %}
 		<hr>
-		<div>There are no logged event for this session.</div>
+		<div>There is no scraped data saved for this session.</div>
 	{% endif %}
 	<hr/>
 </div>
