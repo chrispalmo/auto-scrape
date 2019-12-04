@@ -25,6 +25,7 @@ class DataEntry(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	timestamp = db.Column(db.DateTime, unique=False, default=datetime.utcnow)
 	scrape_url = db.Column(db.String, unique=False, nullable=False)
+	scrape_function = db.Column(db.String, unique=False, nullable=False)
 	scrape_query = db.Column(db.String, unique=False, nullable=False)
 	element_1 = db.Column(db.String, unique=False, nullable=True)
 	element_2 = db.Column(db.String, unique=False, nullable=True)

@@ -17,7 +17,8 @@
 			<tr>
 				<th scope="col">Timestamp</th>
 			    <th scope="col">URL</th>
-			    <th scope="col">Query</th>
+			    <th scope="col">Query Function</th>
+			    <th scope="col">Query Term</th>
 			    <th scope="col">Data 1</th>
 			    <th scope="col">Data 2</th>
 				<th scope="col">Data 3</th>
@@ -30,6 +31,7 @@
 		<tr>
 				<td scope="col">{{ entry.timestamp }}</td>
 			    <td scope="col">{{ entry.scrape_url }}</td>
+			    <td scope="col">{{ entry.scrape_function }}</td>
 			    <td scope="col">{{ entry.scrape_query }}</td>
 			    <td scope="col">{{ entry.element_1 }}</td>
 			    <td scope="col">{{ entry.element_2 }}</td>

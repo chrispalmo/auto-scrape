@@ -59,8 +59,8 @@ class Scraper():
         except:
             pass
 
-    def save(self, scrape_query, scrape_url, element_1=None, element_2=None, element_3=None, element_4=None, element_5=None):
-        data_entry = DataEntry(scrape_query=scrape_query, scrape_url=scrape_url,
+    def save(self, scrape_function, scrape_query, scrape_url, element_1=None, element_2=None, element_3=None, element_4=None, element_5=None):
+        data_entry = DataEntry(scrape_function=scrape_function, scrape_query=scrape_query, scrape_url=scrape_url,
                                element_1=element_1, element_2=element_2, element_3=element_3,
                                element_4=element_4, element_5=element_5, session_id=self.session_id)
         func_name = currentframe().f_code.co_name
