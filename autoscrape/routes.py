@@ -84,10 +84,11 @@ def delete_session_record(session_id):
 	try:
 		Session.query.filter_by(id=session_id).delete()
 		LogEntry.query.filter_by(session_id=session_id).delete()
+		DataEntry.query.filter_by(session_id=session_id).delete()
 		db.session.commit()
-		flash(f"Scraper {session_id} has been deleted.","success")
+		flash(f"Scraper {session_id} has been deleted.", "success")
 	except Exception as e:
-		flash(f"Error ({e}): Session {session_id} could not be deleted.","danger")
+		flash(f"Error ({e}): Session {session_id} could not be deleted.", "danger")
 	return redirect(url_for('dashboard'))
 
 
