@@ -20,7 +20,7 @@ class TestScraper2(Thread, base_scraper.Scraper):
             elements = self.find_elements_by_class_name('storylink')
             elements_text_list = [element.text for element in elements]
             element_1_string = ';'.join(elements_text_list)
-            self.save('storylink', 'https://news.ycombinator.com/', element_1_string)
+            self.save(self.find_elements_by_class_name.__name__, 'storylink', 'https://news.ycombinator.com/', element_1_string)
         except Exception as e:
             self.log(e)
 
