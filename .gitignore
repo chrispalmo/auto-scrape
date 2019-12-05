@@ -4,5 +4,6 @@ __pycache__
 *.pyc
 *.log
 *.db
+autoscrape.env
 chromedriver
 chromedriver.exe

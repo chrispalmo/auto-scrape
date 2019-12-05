@@ -8,6 +8,7 @@ from autoscrape import db, active_sessions
 from autoscrape.models import Session, LogEntry, DataEntry
 from sqlalchemy import exc
 
+
 class Scraper():
 
     def __init__(self, session_id):
