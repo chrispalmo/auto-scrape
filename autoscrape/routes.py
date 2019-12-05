@@ -3,10 +3,11 @@ from datetime import datetime
 from flask import render_template, url_for, flash, redirect, Response
 from autoscrape import app, active_sessions, max_active_sessions, db
 from autoscrape.helpers import db_query_output_to_csv 
-from autoscrape.scrapers import testscraper2
+from autoscrape.scrapers import testscraper1, testscraper2
 from autoscrape.models import TestDBClass, Session, LogEntry, DataEntry
 
 scrapers = {
+	"TestScraper1": testscraper1.TestScraper1,
 	"TestScraper2": testscraper2.TestScraper2
 }
 
@@ -47,6 +48,7 @@ def dashboard():
 	active_sessions = Session.query.filter(Session.status=="Active").order_by(Session.date_started.desc())
 	past_sessions = Session.query.filter(Session.status!="Active").order_by(Session.date_stopped.desc())
 	return render_template('dashboard.html',
+		scrapers=scrapers,
 		max_active_sessions=max_active_sessions,
 		active_sessions=active_sessions,
 		number_of_active_sessions=active_sessions.count(),

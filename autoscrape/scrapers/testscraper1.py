@@ -2,7 +2,7 @@ from threading import Thread
 from autoscrape import base_scraper
 
 
-class TestScraper2(Thread, base_scraper.Scraper):
+class TestScraper1(Thread, base_scraper.Scraper):
 
     def __init__(self, session_id):
         Thread.__init__(self)
@@ -10,7 +10,7 @@ class TestScraper2(Thread, base_scraper.Scraper):
 
     @staticmethod
     def description():
-        return "Scrapes YCHN post titles (saves as semicolon-separated string)"
+        return "Scrapes YCHN post titles"
 
     def run(self):
         # Scraping sequence goes here. Logging is taken care of by the base_scraper base class for standard browser functions.
@@ -20,12 +20,13 @@ class TestScraper2(Thread, base_scraper.Scraper):
             self.get(url)
             elements = self.find_elements_by_class_name('storylink')
             elements_text_list = [element.text for element in elements]
-            elements_as_string = ';'.join(elements_text_list)
-            self.save(
-                'Post Titles', 
-                url,
-                elements_as_string)
+            for element in elements_text_list:
+                self.save(
+                    'Post Title', 
+                    url,
+                    element)
         except Exception as e:
             self.log(e)
 
         self.destroy()
+        
