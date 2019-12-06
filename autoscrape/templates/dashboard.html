@@ -3,7 +3,11 @@
 <div class="content-section">
 	<h1>Dashboard</h1>
 	<hr/>
-	<a href="{{ url_for('create_session', scraper_name='TestScraper2') }}" class="btn btn-success" role="button">Start TestScraper2 <i class="glyphicon glyphicon-play"></i></a>
+	{% for scraper_name in scrapers %}
+		<tr>
+			<a href="{{ url_for('create_session', scraper_name=scraper_name) }}" class="btn btn-success" role="button">Start {{scraper_name }} <i class="glyphicon glyphicon-play"></i></a>
+		</tr>
+	{% endfor %}
 	<hr/>
 	<h3>Active Sessions</h3>
 	{% if number_of_active_sessions != 0 %}
