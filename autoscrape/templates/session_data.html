@@ -7,6 +7,7 @@
 	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Back</a>
 	{% if session.status != "Active" %}
 		<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button">View Log  <i class="glyphicon glyphicon-search"></i></a>
+		<a href="{{ url_for('download_session_data', session_id=session.id)}}" class="btn btn-dark" role="button">Download CSV <i class="glyphicon glyphicon-cloud-download"></i></a>
 		<a href="{{ url_for('delete_session_record', session_id=session.id) }}" class="btn btn-danger" role="button">Delete <i class="glyphicon glyphicon-trash"></i></a>
 	{% else %}
 		<a href="{{ url_for('session_data', session_id=session.id) }}" class="btn btn-dark" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
