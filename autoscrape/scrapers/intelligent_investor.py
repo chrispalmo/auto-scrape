@@ -31,5 +31,16 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
             result_dropdown.click()
             result_dropdown_250 = self.driver.find_element_by_xpath("//ul[contains(@class, 'dropdown-menu')]/li[contains(@class, 'ng-scope')][4]/a[contains(@class, 'ng-binding')]")
             result_dropdown_250.click()
+            table_columns = self.find_elements_by_xpath("//th")
+            table_rows = self.find_elements_by_xpath("//tbody/tr")
+            parsed_dict = {}
+            for row in table_rows:
+                current_index = table_rows.index(row) + 1
+                for column in table_columns:
+                    row_data = self.driver.find_element_by_xpath(
+                        "//tr[{}]/td[{}]".format(current_index, table_columns.index(column) + 1))
+                    parsed_dict.update({column.text: row_data.text})
+            return parsed_dict
+
         except Exception as e:
             self.log(e)
