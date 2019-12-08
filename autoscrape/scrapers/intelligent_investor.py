@@ -33,14 +33,14 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
             result_dropdown_250.click()
             table_columns = self.find_elements_by_xpath("//th")
             table_rows = self.find_elements_by_xpath("//tbody/tr")
+            parsed_dict_list = []
             parsed_dict = {}
             for row in table_rows:
                 current_index = table_rows.index(row) + 1
                 for column in table_columns:
-                    row_data = self.driver.find_element_by_xpath(
-                        "//tr[{}]/td[{}]".format(current_index, table_columns.index(column) + 1))
-                    parsed_dict.update({column.text: row_data.text})
-            return parsed_dict
+                    parsed_dict.update({column.text: self.driver.find_element_by_xpath("//tr[{}]/td[{}]".format(current_index, table_columns.index(column) + 1)).text})
+                    parsed_dict_list.append(parsed_dict)
+            return parsed_dict_list
 
         except Exception as e:
             self.log(e)
