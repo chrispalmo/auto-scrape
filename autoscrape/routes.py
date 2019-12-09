@@ -2,7 +2,7 @@ from copy import copy
 from datetime import datetime
 from flask import render_template, url_for, flash, redirect, Response
 from autoscrape import app, active_sessions, max_active_sessions, db
-from autoscrape.helpers import db_query_output_to_csv 
+from autoscrape.helpers import db_query_output_to_csv, time_breakdown 
 from autoscrape.scrapers import testscraper1, testscraper2
 from autoscrape.models import TestDBClass, Session, LogEntry, DataEntry
 
@@ -16,8 +16,7 @@ scrapers = {
 def download_session_data(session_id):
 	
 	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.asc())
-	csv = db_query_output_to_csv(
-
+	csv = db_query_output_to_csv.db_query_output_to_csv(
 		query_output=data_entries, 
 		columns_to_exclude=["_sa_instance_state", "id"])
 	return Response(
