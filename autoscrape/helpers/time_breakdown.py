@@ -27,7 +27,7 @@ def time_breakdown(ms):
 		"hr": hr,
 		"min": min,
 		"sec": sec,
-		"ms": ms_out
+		"ms": round(ms_out)
 	}
 
 def time_breakdown_string(ms, granularity=5):
