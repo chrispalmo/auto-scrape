@@ -36,35 +36,17 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
             result_dropdown_250 = self.find_element_by_xpath("//ul[contains(@class, 'dropdown-menu')]/li[contains(@class, 'ng-scope')][4]/a[contains(@class, 'ng-binding')]")
             result_dropdown_250.click()
             #get column headings
-            table_columns = self.find_elements_by_xpath("//th")
+            table_columns = [column.text for column in self.find_elements_by_xpath("//th")]
             #get table rows
             table_rows = self.find_elements_by_xpath("//tbody/tr")
-            #initialise row_dict and row_dict_list
+            #initialise row_dict_list
             row_dict_list = []
-            row_dict = {}
-            for row in table_rows:
-                for column in table_columns:
-                    print("Scraping row {}, column {}".format(table_rows.index(row) +1, table_columns.index(column) + 1))
-                    row_dict.update({column.text: self.find_element_by_xpath("//tr[{}]/td[{}]".format(table_rows.index(row) + 1, table_columns.index(column) + 1)).text})
-                    row_dict_list.append(row_dict)
+            #iterate over table rows
+            for row_index, row in enumerate(table_rows):
+                #for each row iteration, for each column, create dictionary with key of column header and value of the table cell
+                row_dict = {column_value: self.find_element_by_xpath("//tr[{}]/td[{}]".format(row_index+1, column_index+1)).text for (column_index, column_value) in enumerate(table_columns)}
+                row_dict_list.append(row_dict)
             return row_dict_list
         except Exception as e:
             self.log(e)
-
         self.destroy()
-
-
-"""
-#works, more verbose but more readable?
-table_columns = ["column_1", "column_2", "column_3"]
-table_rows = ["row_1", "row_2", "row_3", "row_4", "row_5"]
-my_list = []
-for row_index, row in enumerate(table_rows):
-    my_dict = {column_value:"{},{}".format(column_index, row_index) for (column_index, column_value) in enumerate(table_columns)}
-    my_list.append(my_dict)
-
-#works, concise but less readable?
-table_rows = ["row_1", "row_2", "row_3", "row_4", "row_5"]
-table_columns = ["column_1", "column_2", "column_3"]
-my_list = [{column_value:"{},{}".format(column_index, row_index) for (column_index, column_value) in enumerate(table_columns)} for row_index, row_value in enumerate(table_rows)]
-"""
