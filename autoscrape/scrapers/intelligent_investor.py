@@ -52,3 +52,19 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
             self.log(e)
 
         self.destroy()
+
+
+"""
+#works, more verbose but more readable?
+table_columns = ["column_1", "column_2", "column_3"]
+table_rows = ["row_1", "row_2", "row_3", "row_4", "row_5"]
+my_list = []
+for row_index, row in enumerate(table_rows):
+    my_dict = {column_value:"{},{}".format(column_index, row_index) for (column_index, column_value) in enumerate(table_columns)}
+    my_list.append(my_dict)
+
+#works, concise but less readable?
+table_rows = ["row_1", "row_2", "row_3", "row_4", "row_5"]
+table_columns = ["column_1", "column_2", "column_3"]
+my_list = [{column_value:"{},{}".format(column_index, row_index) for (column_index, column_value) in enumerate(table_columns)} for row_index, row_value in enumerate(table_rows)]
+"""
