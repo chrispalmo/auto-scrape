@@ -5,6 +5,7 @@ from secrets import token_hex
 from time import sleep
 from selenium import webdriver
 from autoscrape import db, active_sessions
+from autoscrape.helpers import time_breakdown 
 from autoscrape.models import Session, LogEntry, DataEntry
 from sqlalchemy import exc
 
@@ -15,7 +16,6 @@ class Scraper():
         self.session_id = session_id
         self.log(f"Initializing session...")
         self.active_sessions = active_sessions
-
         agent_os = request.user_agent.platform
         if agent_os == 'windows':
             self.driver = webdriver.Chrome('./autoscrape/chromedriver.exe')
@@ -90,12 +90,14 @@ class Scraper():
     def destroy(self, completed=True):
         self.driver.quit()
         session = Session.query.filter_by(id=self.session_id).first()
+        session.date_stopped = datetime.utcnow()
+        scrape_time = (session.date_stopped - session.date_started).total_seconds() * 1000
+        scrape_time_string = time_breakdown.time_breakdown_string(scrape_time, granularity=2)
         if completed:
             session.status = "Completed"
-            self.log("Session completed.")
+            self.log(f"Session completed in {scrape_time_string}.")
         else:
             session.status = "Aborted"
-            self.log("*** Session aborted ***")
-        session.date_stopped = datetime.utcnow()
+            self.log(f"*** Session aborted after {scrape_time_string} ***")
         db.session.commit()
         self.active_sessions.pop(self.session_id)

@@ -2,12 +2,14 @@ from copy import copy
 from datetime import datetime
 from flask import render_template, url_for, flash, redirect, Response
 from autoscrape import app, active_sessions, max_active_sessions, db
-from autoscrape.helpers import db_query_output_to_csv 
-from autoscrape.scrapers import testscraper2, intelligent_investor
+from autoscrape.helpers import db_query_output_to_csv
+from autoscrape.scrapers import testscraper1, testscraper2, intelligent_investor
 from autoscrape.models import Session, LogEntry, DataEntry
 
 scrapers = {
-	"TestScraper2": testscraper2.TestScraper2, "IntelligentInvestor": intelligent_investor.IntelligentInvestor
+	"TestScraper1": testscraper1.TestScraper1,
+	"TestScraper2": testscraper2.TestScraper2,
+  "IntelligentInvestor": intelligent_investor.IntelligentInvestor
 }
 
 
@@ -15,8 +17,7 @@ scrapers = {
 def download_session_data(session_id):
 	
 	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.asc())
-	csv = db_query_output_to_csv(
-
+	csv = db_query_output_to_csv.db_query_output_to_csv(
 		query_output=data_entries, 
 		columns_to_exclude=["_sa_instance_state", "id"])
 	return Response(
@@ -47,6 +48,7 @@ def dashboard():
 	active_sessions = Session.query.filter(Session.status=="Active").order_by(Session.date_started.desc())
 	past_sessions = Session.query.filter(Session.status!="Active").order_by(Session.date_stopped.desc())
 	return render_template('dashboard.html',
+		scrapers=scrapers,
 		max_active_sessions=max_active_sessions,
 		active_sessions=active_sessions,
 		number_of_active_sessions=active_sessions.count(),
@@ -118,7 +120,7 @@ def delete_session_record(session_id):
 		LogEntry.query.filter_by(session_id=session_id).delete()
 		DataEntry.query.filter_by(session_id=session_id).delete()
 		db.session.commit()
-		flash(f"Scraper {session_id} has been deleted.", "success")
+		flash(f"Session {session_id} and all scraped data  has been deleted.", "success")
 	except Exception as e:
 		flash(f"Error ({e}): Session {session_id} could not be deleted.", "danger")
 	return redirect(url_for('dashboard'))
