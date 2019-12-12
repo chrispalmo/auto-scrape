@@ -59,11 +59,28 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
                         element_text = self.find_element_by_xpath("//tr[{}]/td[{}]".format(row_index + 1, column_index + 1)).text
                         #store element_text in row_dict
                         row_dict.update({column: element_text})
+                #calculate "Buy Margin"
+                try:
+                    row_dict["Buy Margin"] = ((float(row_dict["Buy Below"].replace('$', '')) - float(
+                        row_dict["Current Price"].replace('$', ''))) / float(
+                        row_dict["Buy Below"].replace('$', ''))) * 100
+                except ValueError:
+                    row_dict["Buy Margin"] = 0
+                #calculate "Sell Margin"
+                try:
+                    row_dict["Sell Margin"] = ((float(row_dict["Sell Above"].replace('$', '')) - float(
+                        row_dict["Current Price"].replace('$', ''))) / float(
+                        row_dict["Sell Above"].replace('$', ''))) * 100
+                except ValueError:
+                    row_dict["Sell Margin"] = 0
                 #append row_dict to row_dict_list with each row iteration
                 row_dict_list.append(row_dict)
-            return row_dict_list
+            for row in row_dict_list:
+                print(row)
+
         except Exception as e:
             self.log(e)
+
         self.destroy()
 
 
