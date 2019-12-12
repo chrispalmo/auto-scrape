@@ -41,12 +41,50 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
             table_rows = self.find_elements_by_xpath("//tbody/tr")
             #initialise row_dict_list
             row_dict_list = []
-            #iterate over table rows
+            #iterate over table rows, storing index
             for row_index, row in enumerate(table_rows):
-                #for each row iteration, for each column, create dictionary with key of column header and value of the table cell
-                row_dict = {column_value: self.find_element_by_xpath("//tr[{}]/td[{}]".format(row_index+1, column_index+1)).text for (column_index, column_value) in enumerate(table_columns)}
+                #initialise row_dict
+                row_dict = {}
+                #iterate over table columns, storing index
+                for column_index, column in enumerate(table_columns):
+                    #For first column, must get text from div class information
+                    if column_index == 0:
+                        element = self.find_element_by_xpath("//tr[{}]/td[{}]/div[2]/div[2]".format(row_index + 1, column_index + 1))
+                        element_class = element.get_attribute("class")
+                        current_recommendation = element_class.split()[2]
+                        #store current recommendation in row_dict
+                        row_dict.update({column: current_recommendation})
+                    #if any other column index, get text straight from table/row index
+                    else:
+                        element_text = self.find_element_by_xpath("//tr[{}]/td[{}]".format(row_index + 1, column_index + 1)).text
+                        #store element_text in row_dict
+                        row_dict.update({column: element_text})
+                #append row_dict to row_dict_list with each row iteration
                 row_dict_list.append(row_dict)
             return row_dict_list
         except Exception as e:
             self.log(e)
         self.destroy()
+
+
+"""
+#get column headings
+table_columns = [column.text for column in driver.find_elements_by_xpath("//th")]
+#get table rows
+table_rows = driver.find_elements_by_xpath("//tbody/tr")
+#initialise row_dict_list
+row_dict_list = []
+#iterate over table rows
+for row_index, row in enumerate(table_rows):
+    row_dict = {}
+    for column_index, column in enumerate(table_columns):
+        if column_index == 0:
+            element = driver.find_element_by_xpath("//tr[{}]/td[{}]/div[2]/div[2]".format(row_index+1, column_index+1))
+            element_class = element.get_attribute("class")
+            current_recommendation = element_class.split()[2]
+            row_dict.update({column: current_recommendation})
+        else:
+            element_text = driver.find_element_by_xpath("//tr[{}]/td[{}]".format(row_index+1, column_index+1)).text
+            row_dict.update({column: element_text})
+    row_dict_list.append(row_dict)
+"""
