@@ -36,14 +36,15 @@ class DataEntry(db.Model):
 class IntelligentInvestor(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	timestamp = db.Column(db.DateTime, unique=False, default=datetime.utcnow)
-	company_name = db.Column(db.String, unique=False, nullable=True)
-	analyst_name = db.Column(db.String, unique=False, nullable=True)
+	recommendation = db.Column(db.String, unique=False, nullable=True)
+	company = db.Column(db.String, unique=False, nullable=True)
+	analyst = db.Column(db.String, unique=False, nullable=True)
 	latest_review = db.Column(db.String, unique=False, nullable=True)
 	review_price = db.Column(db.Numeric, unique=False, nullable=True)
 	current_price = db.Column(db.Numeric, unique=False, nullable=True)
 	buy_below = db.Column(db.Numeric, unique=False, nullable=True)
 	sell_above = db.Column(db.Numeric, unique=False, nullable=True)
-	additional_discount = db.Column(db.Numeric, unique=False, nullable=True)
+	buy_margin = db.Column(db.Numeric, unique=False, nullable=True)
 	sell_margin = db.Column(db.Numeric, unique=False, nullable=True)
 	max_portfolio = db.Column(db.String, unique=False, nullable=True)
 

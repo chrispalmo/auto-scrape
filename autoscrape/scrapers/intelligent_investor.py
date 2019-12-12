@@ -57,25 +57,29 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
                         element_class = element.get_attribute("class")
                         current_recommendation = element_class.split()[2]
                         #store current recommendation in row_dict
-                        row_dict.update({column: current_recommendation})
+                        row_dict.update({column: str(current_recommendation)})
                     #if any other column index, get text straight from table/row index
                     else:
                         element_text = self.find_element_by_xpath("//tr[{}]/td[{}]".format(row_index + 1, column_index + 1)).text
                         #store element_text in row_dict
-                        row_dict.update({column: element_text})
+                        row_dict.update({column: str(element_text)})
                 #calculate "Buy Margin"
                 try:
-                    row_dict["Buy Margin"] = round(((float(row_dict["Buy Below"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Buy Below"].replace('$', ''))) * 100, 2)
+                    row_dict["Buy Margin"] = str(round(((float(row_dict["Buy Below"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Buy Below"].replace('$', ''))) * 100, 2))
                 except ValueError:
-                    row_dict["Buy Margin"] = 0
+                    row_dict["Buy Margin"] = "0"
                 #calculate "Sell Margin"
                 try:
-                    row_dict["Sell Margin"] = round(((float(row_dict["Sell Above"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Sell Above"].replace('$', ''))) * 100, 2)
+                    row_dict["Sell Margin"] = str(round(((float(row_dict["Sell Above"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Sell Above"].replace('$', ''))) * 100, 2))
                 except ValueError:
-                    row_dict["Sell Margin"] = 0
+                    row_dict["Sell Margin"] = "0"
                 #append row_dict to row_dict_list with each row iteration
                 row_dict_list.append(row_dict)
-                #todo save this to database
-
+            column_string = ';'.join(row_dict_list[0].keys())
+            self.save("headings", url, column_string)
+            for row_dict in row_dict_list:
+                row_string = ';'.join(row_dict.values())
+                self.save("recommendation", url, row_string)
+            self.destroy()
         except Exception as e:
             self.log(e)
