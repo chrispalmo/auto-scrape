@@ -1,6 +1,7 @@
 from datetime import datetime
 from autoscrape import db
 
+
 class Session(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	date_started = db.Column(db.DateTime, unique=False, default=datetime.utcnow)
@@ -32,12 +33,23 @@ class DataEntry(db.Model):
 	session_id = db.Column(db.Integer, db.ForeignKey('session.id'), nullable=False)
 
 
-class TestDBClass(db.Model):
+class IntelligentInvestor(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	scrape_query1 = db.Column(db.String, unique=False)
-	scrape_url = db.Column(db.String, unique=False)
-	date_scraped = db.Column(db.DateTime, unique=False, default=datetime.utcnow)
-	result = db.Column(db.String, unique=False)
+	timestamp = db.Column(db.DateTime, unique=False, default=datetime.utcnow)
+	company_name = db.Column(db.String, unique=False, nullable=True)
+	analyst_name = db.Column(db.String, unique=False, nullable=True)
+	latest_review = db.Column(db.String, unique=False, nullable=True)
+	review_price = db.Column(db.Numeric, unique=False, nullable=True)
+	current_price = db.Column(db.Numeric, unique=False, nullable=True)
+	buy_below = db.Column(db.Numeric, unique=False, nullable=True)
+	sell_above = db.Column(db.Numeric, unique=False, nullable=True)
+	additional_discount = db.Column(db.Numeric, unique=False, nullable=True)
+	sell_margin = db.Column(db.Numeric, unique=False, nullable=True)
+	max_portfolio = db.Column(db.String, unique=False, nullable=True)
 
 	def __repr__(self):
-		return f"TestScrape('{self.id}','{self.result}', {self.scrape_query1}, {self.scrape_url}, {self.date_scraped})"
+		return f"IntelligentInvestor('id: {self.id}, timestamp: {self.timestamp}," \
+			   f" company_name: {self.company_name}, analyst_name: {self.analyst_name}," \
+			   f" latest_review: {self.latest_review}, review_price: {self.review_price}," \
+			   f" current_price: {self.current_price}, buy_below: {self.buy_below}," \
+			   f" sell_above: {self.sell_above}, max_portfolio: {self.max_portfolio})"

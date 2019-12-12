@@ -9,6 +9,7 @@ from autoscrape.helpers import time_breakdown
 from autoscrape.models import Session, LogEntry, DataEntry
 from sqlalchemy import exc
 
+
 class Scraper():
 
     def __init__(self, session_id):
@@ -42,6 +43,14 @@ class Scraper():
             return self.driver.find_elements_by_xpath(query)
         except Exception as e:
             self.log(e)        
+
+    def find_element_by_xpath(self, query):
+        try:
+            func_name = currentframe().f_code.co_name
+            self.log(f"""{func_name}("{query}")""")
+            return self.driver.find_element_by_xpath(query)
+        except Exception as e:
+            self.log(e)
 
     def find_elements_by_class_name(self, query):
         try:
