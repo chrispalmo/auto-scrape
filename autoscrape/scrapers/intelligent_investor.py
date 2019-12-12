@@ -61,12 +61,12 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
                         row_dict.update({column: element_text})
                 #calculate "Buy Margin"
                 try:
-                    row_dict["Buy Margin"] = ((float(row_dict["Buy Below"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Buy Below"].replace('$', ''))) * 100
+                    row_dict["Buy Margin"] = round(((float(row_dict["Buy Below"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Buy Below"].replace('$', ''))) * 100, 2)
                 except ValueError:
                     row_dict["Buy Margin"] = 0
                 #calculate "Sell Margin"
                 try:
-                    row_dict["Sell Margin"] = ((float(row_dict["Sell Above"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Sell Above"].replace('$', ''))) * 100
+                    row_dict["Sell Margin"] = round(((float(row_dict["Sell Above"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Sell Above"].replace('$', ''))) * 100, 2)
                 except ValueError:
                     row_dict["Sell Margin"] = 0
                 #append row_dict to row_dict_list with each row iteration
