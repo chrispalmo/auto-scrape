@@ -15,67 +15,73 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
         return "Intelligent Investor Scraper"
 
     def run(self):
-        # Scraping sequence goes here. Logging is taken care of by the base_scraper base class for standard browser functions.
         try:
-            # Get recommendations
             url = "https://www.intelligentinvestor.com.au/identity/logon?returnUrl=%2Fresearch%2Frecommendations&prefix=2"
             self.get(url)
             time.sleep(2)
-            #enter email address
+            """
+            Login form
+            """
             login_email_form = self.find_element_by_xpath("//input[@id='Email']")
             login_email_form.click()
             login_email_form.send_keys(environ['USERNAME'])
-            #enter password
             login_password_form = self.find_element_by_xpath("//input[@id='Password']")
             login_password_form.click()
             login_password_form.send_keys(environ['PASSWORD'])
-            #submit form
             login_submit_button = self.find_element_by_xpath("//input[contains(@class, 'btn btn-primary btn-fw btn-brand-style-with-pad')]")
             login_submit_button.click()
             time.sleep(2)
-            # increase results on page
+            """
+            Increase result count on page
+            """
             result_dropdown = self.find_element_by_xpath("//button[contains(@class, 'btn btn-default dropdown-toggle ng-binding')]")
             result_dropdown.click()
             result_dropdown_250 = self.find_element_by_xpath("//ul[contains(@class, 'dropdown-menu')]/li[contains(@class, 'ng-scope')][4]/a[contains(@class, 'ng-binding')]")
             result_dropdown_250.click()
             time.sleep(2)
-            #get column headings
+            """
+            Get table column/row indexes
+            """
             table_columns = [column.text for column in self.find_elements_by_xpath("//th")]
-            #get number of table rows
             table_rows_count = len(self.find_elements_by_xpath("//tbody/tr"))
-            #initialise row_dict_list
+            """
+            Scrape table data
+            """
             row_dict_list = []
-            #iterate over table rows, storing index
             for row_index in range(table_rows_count):
-                #initialise row_dict
                 row_dict = {}
-                #iterate over table columns, storing index
                 for column_index, column in enumerate(table_columns):
-                    #For first column, must get text from div class information
                     if column_index == 0:
                         element = self.find_element_by_xpath("//tr[{}]/td[{}]/div[2]/div[2]".format(row_index + 1, column_index + 1))
                         element_class = element.get_attribute("class")
                         current_recommendation = element_class.split()[2]
-                        #store current recommendation in row_dict
-                        row_dict.update({column: current_recommendation})
-                    #if any other column index, get text straight from table/row index
+                        row_dict.update({column: str(current_recommendation)})
                     else:
                         element_text = self.find_element_by_xpath("//tr[{}]/td[{}]".format(row_index + 1, column_index + 1)).text
-                        #store element_text in row_dict
-                        row_dict.update({column: element_text})
-                #calculate "Buy Margin"
+                        row_dict.update({column: str(element_text)})
+                """
+                Calculate "Buy Margin" and "Sell Margin" 
+                """
                 try:
-                    row_dict["Buy Margin"] = round(((float(row_dict["Buy Below"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Buy Below"].replace('$', ''))) * 100, 2)
+                    row_dict["Buy Margin"] = str(round(((float(row_dict["Buy Below"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Buy Below"].replace('$', ''))) * 100, 2))
                 except ValueError:
-                    row_dict["Buy Margin"] = 0
-                #calculate "Sell Margin"
+                    row_dict["Buy Margin"] = "0"
                 try:
-                    row_dict["Sell Margin"] = round(((float(row_dict["Sell Above"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Sell Above"].replace('$', ''))) * 100, 2)
+                    row_dict["Sell Margin"] = str(round(((float(row_dict["Sell Above"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Sell Above"].replace('$', ''))) * 100, 2))
                 except ValueError:
-                    row_dict["Sell Margin"] = 0
-                #append row_dict to row_dict_list with each row iteration
+                    row_dict["Sell Margin"] = "0"
+                """
+                Build final list of dictionaries
+                """
                 row_dict_list.append(row_dict)
-                #todo save this to database
-
+            """
+            Modify data format and write to database
+            """
+            column_string = ';'.join(row_dict_list[0].keys())
+            self.save("headings", url, column_string)
+            for row_dict in row_dict_list:
+                row_string = ';'.join(row_dict.values())
+                self.save("recommendation", url, row_string)
+            self.destroy()
         except Exception as e:
             self.log(e)
