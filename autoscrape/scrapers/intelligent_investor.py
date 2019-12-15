@@ -62,14 +62,23 @@ class IntelligentInvestor(Thread, base_scraper.Scraper):
                 """
                 Calculate "Buy Margin" and "Sell Margin" 
                 """
+                buy_below = None
+                sell_above = None
+                current_price = None
                 try:
-                    row_dict["Buy Margin"] = str(round(((float(row_dict["Buy Below"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Buy Below"].replace('$', ''))) * 100, 2))
+                    buy_below = float(row_dict["Buy Below"].replace('$', ''))
+                    sell_above = float(row_dict["Sell Above"].replace('$', ''))
+                    current_price = float(row_dict["Current Price"].replace('$', ''))
                 except ValueError:
-                    row_dict["Buy Margin"] = "0"
+                    pass
                 try:
-                    row_dict["Sell Margin"] = str(round(((float(row_dict["Sell Above"].replace('$', '')) - float(row_dict["Current Price"].replace('$', ''))) / float(row_dict["Sell Above"].replace('$', ''))) * 100, 2))
-                except ValueError:
-                    row_dict["Sell Margin"] = "0"
+                    row_dict["Buy Margin"] = str(round(((buy_below - current_price) / buy_below) * 100, 2))
+                except TypeError:
+                    row_dict["Buy Margin"] = "-"
+                try:
+                    row_dict["Sell Margin"] = str(round(((sell_above - current_price) / sell_above) * 100, 2))
+                except TypeError:
+                    row_dict["Sell Margin"] = "-"
                 """
                 Build final list of dictionaries
                 """
