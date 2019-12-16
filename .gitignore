@@ -4,6 +4,9 @@ __pycache__
 *.pyc
 *.log
 *.db
-autoscrape.env
 chromedriver
 chromedriver.exe
+# set secret env vars (LINUX)
+autoscrape.env
+# set secret env vars (WINDOWS)
+set_secret_env_vars.ps1
