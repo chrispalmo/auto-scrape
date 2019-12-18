@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import request
 from inspect import currentframe
 from secrets import token_hex
+from threading import Thread
 from time import sleep
 from selenium import webdriver
 from autoscrape import db, active_sessions
@@ -10,9 +11,10 @@ from autoscrape.models import Session, LogEntry, DataEntry
 from sqlalchemy import exc
 
 
-class Scraper():
+class Scraper(Thread):
 
     def __init__(self, session_id):
+        Thread.__init__(self)
         self.session_id = session_id
         self.log(f"Initializing session...")
         self.active_sessions = active_sessions
