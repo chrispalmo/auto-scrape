@@ -1,11 +1,9 @@
-from threading import Thread
 from autoscrape import base_scraper
 
 
-class TestScraper1(Thread, base_scraper.Scraper):
+class TestScraper1(base_scraper.Scraper):
 
     def __init__(self, session_id):
-        Thread.__init__(self)
         base_scraper.Scraper.__init__(self, session_id)
 
     @staticmethod

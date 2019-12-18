@@ -1,13 +1,11 @@
-from threading import Thread
 from autoscrape import base_scraper
 from os import environ
 import time
 
 
-class IntelligentInvestor(Thread, base_scraper.Scraper):
+class IntelligentInvestor(base_scraper.Scraper):
 
     def __init__(self, session_id):
-        Thread.__init__(self)
         base_scraper.Scraper.__init__(self, session_id)
 
     @staticmethod
