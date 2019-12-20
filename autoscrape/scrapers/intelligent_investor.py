@@ -20,12 +20,18 @@ class IntelligentInvestor(base_scraper.Scraper):
             """
             Login form
             """
+            try:
+                username = environ['II_USERNAME']
+                password = environ['II_PASSWORD']
+            except KeyError as e:
+                self.log("Username and Password not provided. Contact system administrator to ensure they have been provided as environment variables.")
+                raise
             login_email_form = self.find_element_by_xpath("//input[@id='Email']")
             login_email_form.click()
-            login_email_form.send_keys(environ['USERNAME'])
+            login_email_form.send_keys(username)
             login_password_form = self.find_element_by_xpath("//input[@id='Password']")
             login_password_form.click()
-            login_password_form.send_keys(environ['PASSWORD'])
+            login_password_form.send_keys(password)
             login_submit_button = self.find_element_by_xpath("//input[contains(@class, 'btn btn-primary btn-fw btn-brand-style-with-pad')]")
             login_submit_button.click()
             time.sleep(2)
@@ -91,4 +97,5 @@ class IntelligentInvestor(base_scraper.Scraper):
                 self.save("recommendation", url, row_string)
             self.destroy()
         except Exception as e:
-            self.log(e)
+            self.destroy(completed=False)
+            raise
