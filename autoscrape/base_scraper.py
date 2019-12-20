@@ -63,10 +63,13 @@ class Scraper(Thread):
             self.log(e)
 
     def log(self, message):
+        entry = LogEntry(message=message, session_id=self.session_id)
         try:
-            entry = LogEntry(message=message, session_id=self.session_id)
             db.session.add(entry)
             db.session.commit()
+        except exc.SQLAlchemyError as e:
+            db.session.rollback()
+            raise
         except Exception as e:
             raise
 
