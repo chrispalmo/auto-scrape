@@ -10,3 +10,4 @@ chromedriver.exe
 autoscrape.env
 # set secret env vars (WINDOWS)
 set_secret_env_vars.ps1
+.swp

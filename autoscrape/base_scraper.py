@@ -5,11 +5,13 @@ from secrets import token_hex
 from threading import Thread
 from time import sleep
 from selenium import webdriver
+from selenium.webdriver.chrome import options
 from autoscrape import db, active_sessions
 from autoscrape.helpers import time_breakdown 
 from autoscrape.models import Session, LogEntry, DataEntry
 from sqlalchemy import exc
 
+print(options)
 
 class Scraper(Thread):
 
@@ -18,11 +20,11 @@ class Scraper(Thread):
         self.session_id = session_id
         self.log(f"Initializing session...")
         self.active_sessions = active_sessions
-        agent_os = request.user_agent.platform
-        if agent_os == 'windows':
-            self.driver = webdriver.Chrome('./autoscrape/chromedriver.exe')
-        else:
-            self.driver = webdriver.Chrome('./autoscrape/chromedriver')
+        chrome_options = options.Options()  
+        chrome_options.add_argument("--headless")  
+        self.driver = webdriver.Chrome(
+			'./autoscrape/chromedriver',
+			chrome_options = chrome_options)
 
         #max wait for pages to load
         self.driver.set_page_load_timeout(30)
