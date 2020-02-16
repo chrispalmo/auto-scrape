@@ -13,6 +13,8 @@
 		<a href="{{ url_for('session_data', session_id=session.id) }}" class="btn btn-dark" role="button">Preview Data  <i class="glyphicon glyphicon-list-alt"></i></a>
 		<a href="{{ url_for('abort_session', session_id=session.id) }}" class="btn btn-danger" role="button">Abort <i class="glyphicon glyphicon-stop"></i></a>
 	{% endif %}
+	<br/>
+	<br/>
 	{% if number_of_log_entries != 0 %}
 		<table class="table">
 		<thead>

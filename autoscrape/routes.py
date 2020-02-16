@@ -43,6 +43,11 @@ def home():
 	return redirect(url_for("dashboard"))
 
 
+@app.route("/about")
+def about():
+	return render_template('about.html')
+
+
 @app.route("/dashboard")
 def dashboard():
 	active_sessions = Session.query.filter(Session.status=="Active").order_by(Session.date_started.desc())
