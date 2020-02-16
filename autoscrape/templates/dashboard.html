@@ -1,5 +1,20 @@
 {% extends "layout.html" %}
 {% block content %}
+{% block script %}
+	<script>
+			$(".init-message").hide()
+			$(".init-button").click(function() {
+				console.log(this)
+				console.log(this.textContent)
+				$(".init-message").text("Initializing scraper [" + this.textContent + "]...")
+  			$(".init-message").show();
+			});
+	</script>
+{% endblock script %}
+
+<!-- "Initializing {scraper_name} scraper" -->
+<div class="alert alert-success init-message">Initializing scraper...</div>
+
 <div class="content-section">
 	<h1>Dashboard</h1>
 	<hr/>
@@ -10,18 +25,16 @@
 	  </button>
 	  <div class="dropdown-menu">
 			{% for scraper_name in scrapers %}
-				<a href="{{ url_for('create_session', scraper_name=scraper_name) }}" class="dropdown-item">{{scraper_name }} <span style="float: right"><i class="glyphicon glyphicon-play"></i></span></a>
+				<a href="{{ url_for('create_session', scraper_name=scraper_name) }}" class="dropdown-item init-button">{{scraper_name }}</a>
 			{% endfor %}
-	    <div class="dropdown-divider"></div>
-	    <!-- TODO -->
-	    <a class="dropdown-item" href="#TODO">Create New Scraper<span stlye="float: right"> &#10133;</span></a>
-	  </div>
+		</div>
 	</div>
 	<br/>
 	<hr/>
 	<h3>Active Sessions</h3>
 	{% if number_of_active_sessions != 0 %}
 		Currently running {{ number_of_active_sessions }} out of a maximum of {{ max_active_sessions }} concurrent sessions.
+		<br>
 		<br>
 		<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
 		<a href="{{ url_for('abort_all_active_sessions') }}" class="btn btn-danger" role="button">Abort All <i class="glyphicon glyphicon-stop"></i></a>
