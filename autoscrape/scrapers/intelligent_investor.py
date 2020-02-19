@@ -80,7 +80,7 @@ class IntelligentInvestor(base_scraper.Scraper):
                 except TypeError:
                     row_dict["Buy Margin"] = "-"
                 try:
-                    row_dict["Sell Margin"] = str(round(((sell_above - current_price) / sell_above) * 100, 2))
+                    row_dict["Sell Margin"] = str(round(((current_price - sell_above) / sell_above) * 100, 2))
                 except TypeError:
                     row_dict["Sell Margin"] = "-"
                 """
