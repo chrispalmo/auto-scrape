@@ -2,11 +2,11 @@ def db_query_output_to_csv(query_output, columns_to_exclude):
 	"""	Converts output from a SQLAlchemy query to a .csv string.
 
 	Parameters:
-		query_output (list of <class 'SQLAlchemy.Model'>): output from an SQLAlchemy query
-		columns_to_exclude (list of str): names of columns to exclude
+		query_output (list of <class 'SQLAlchemy.Model'>): output from an SQLAlchemy query.
+		columns_to_exclude (list of str): names of columns to exclude from .csv output.
 
 	Returns:
-		csv (str): query_output represented in .csv format
+		csv (str): query_output represented in .csv format.
 
 	Example usage:
 		users = db.Users.query.filter_by(user_id=123)

@@ -2,6 +2,18 @@
 {% block content %}
 <div class="content-section">
 	<h1>Session #{{session.id}} </h1>
+	<table class="table">
+		<tbody>
+			<tr>
+			    <th scope="row">Scraper</th>
+			    <td>{{ session.scraper }}</td>
+			</tr>
+			<tr>
+			    <th scope="row">Status</th>
+				  <td>{{ session.status }}</td>
+			</tr>
+		</tbody>
+	</table>
 	<br/>
 	<h2>Session Data</h2>
 	<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Back</a>
@@ -14,6 +26,8 @@
 		<a href="{{ url_for('log', session_id=session.id) }}" class="btn btn-dark" role="button">View Log  <i class="glyphicon glyphicon-search"></i></a>
 		<a href="{{ url_for('abort_session', session_id=session.id) }}" class="btn btn-danger" role="button">Abort <i class="glyphicon glyphicon-stop"></i></a>
 	{% endif %}
+	<br/>
+	<br/>
 	{% if data_entries_length != 0 %}
 		<table class="table">
 		<thead>
