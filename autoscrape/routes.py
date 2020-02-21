@@ -1,17 +1,12 @@
 from copy import copy
 from datetime import datetime
+
 from flask import render_template, url_for, flash, redirect, Response
 from autoscrape import app, active_sessions, max_active_sessions, db
 from autoscrape.helpers import db_query_output_to_csv
-from autoscrape.scrapers import testscraper1, testscraper2, intelligent_investor
 from autoscrape.models import Session, LogEntry, DataEntry
 
-scrapers = {
-	"TestScraper1": testscraper1.TestScraper1,
-	"TestScraper2": testscraper2.TestScraper2,
-  "IntelligentInvestor": intelligent_investor.IntelligentInvestor
-}
-
+from autoscrape.scrapers.__index__ import scrapers
 
 @app.route("/download/session_data/<int:session_id>")
 def download_session_data(session_id):
@@ -54,6 +49,7 @@ def dashboard():
 	past_sessions = Session.query.filter(Session.status!="Active").order_by(Session.date_stopped.desc())
 	return render_template('dashboard.html',
 		scrapers=scrapers,
+		scraper_descriptions={i: scrapers[i].description() for i in scrapers},
 		max_active_sessions=max_active_sessions,
 		active_sessions=active_sessions,
 		number_of_active_sessions=active_sessions.count(),

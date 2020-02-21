@@ -10,7 +10,7 @@ class IntelligentInvestor(base_scraper.Scraper):
 
     @staticmethod
     def description():
-        return "Intelligent Investor Scraper"
+        return "Scrapes recommendations summaries for all companies covered by Intelligent Investor. Credentials must be set as environmental variables."
 
     def run(self):
         try:

@@ -2,12 +2,17 @@
 {% block content %}
 {% block script %}
 	<script>
+			// Reactive Flash Message
 			$(".init-message").hide()
 			$(".init-button").click(function() {
 				console.log(this)
 				console.log(this.textContent)
 				$(".init-message").text("Initializing scraper [" + this.textContent + "]...")
   			$(".init-message").show();
+				});
+			// Enable Tooltips
+			$(function () {
+  		$('[data-toggle="tooltip"]').tooltip()
 			});
 	</script>
 {% endblock script %}
@@ -24,7 +29,14 @@
 	  </button>
 	  <div class="dropdown-menu">
 			{% for scraper_name in scrapers %}
-				<a href="{{ url_for('create_session', scraper_name=scraper_name) }}" class="dropdown-item init-button">{{scraper_name }}</a>
+				<a 
+					href="{{ url_for('create_session', scraper_name=scraper_name) }}" 
+					class="dropdown-item init-button"
+					data-toggle="tooltip" 
+					data-placement="right" 
+					title="{{ scraper_descriptions[scraper_name] }}"
+				>{{ scraper_name }}
+				</a>
 			{% endfor %}
 		</div>
 	</div>

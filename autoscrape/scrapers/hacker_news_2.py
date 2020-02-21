@@ -1,14 +1,14 @@
 from autoscrape import base_scraper
 
 
-class TestScraper2(base_scraper.Scraper):
+class HackerNews2(base_scraper.Scraper):
 
     def __init__(self, session_id):
         base_scraper.Scraper.__init__(self, session_id)
 
     @staticmethod
     def description():
-        return "Scrapes YCHN post titles (saves as semicolon-separated string)"
+        return "Scrapes post titles from https://news.ycombinator.com/ (saves as semicolon-separated string)"
 
     def run(self):
         # Scraping sequence goes here. Logging is taken care of by the base_scraper base class for standard browser functions.
