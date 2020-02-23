@@ -58,7 +58,14 @@
                     <a class="nav-item nav-link" href="{{url_for('home')}}">dashboard</a>
                     <a class="nav-item nav-link" href="{{url_for('about')}}">about</a>
                 </div>
-            </div>
+                <!-- Navbar Right Side -->
+                <div class="navbar-nav">
+                    {% if current_user.is_authenticated %}
+                    <a class="nav-item nav-link" href="{{url_for('logout')}}">Logout</a>
+                    {% else %}
+                    <a class="nav-item nav-link" href="{{url_for('login')}}">Login</a>
+                    {% endif %}
+                </div>
         </div>
     </nav>
 </header>
