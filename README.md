@@ -5,7 +5,7 @@ Auto-scrape is a platform for building, managing and remotely deploying web scra
 It is built using the [Flask](https://palletsprojects.com/p/flask/) framework and uses [SQLAlchemy](https://www.sqlalchemy.org/) to interface with the SQL database of your choice.
 
 # Demo
-Screencasts demonstrating the user interface in action [available here](palmo.xyz/post/20200224-manage-selenium-web-scrapers-with-auto-scrape/#user-interface-overview).
+GIF screenshots demonstrating the user interface in action <a href="https://palmo.xyz/post/20200224-manage-selenium-web-scrapers-with-auto-scrape/#user-interface-overview">here</a>.
 
 # Features: 
 - live progress logging
