@@ -7,7 +7,7 @@
 			$(".init-button").click(function() {
 				console.log(this)
 				console.log(this.textContent)
-				$(".init-message").text("Initializing < " + this.textContent + "> scraper...")
+				$(".init-message").text("Initializing " + this.textContent + "scraper...")
   			$(".init-message").show();
 				});
 			// Enable Tooltips
@@ -49,6 +49,7 @@
 		<br>
 		<a href="{{ url_for('dashboard') }}" class="btn btn-dark" role="button">Refresh <i class="glyphicon glyphicon-refresh"></i></a>
 		<a href="{{ url_for('abort_all_active_sessions') }}" class="btn btn-danger" role="button">Abort All <i class="glyphicon glyphicon-stop"></i></a>
+		<br/>
 		<br/>
 		<table class="table">
 		<thead>
