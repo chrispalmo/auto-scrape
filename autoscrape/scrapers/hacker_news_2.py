@@ -11,9 +11,7 @@ class HackerNews2(base_scraper.Scraper):
         return "Scrapes post titles from https://news.ycombinator.com/ (saves as semicolon-separated string)"
 
     def run(self):
-        # Scraping sequence goes here. Logging is taken care of by the base_scraper base class for standard browser functions.
         try:
-            # Get top YCHN posts
             url = "https://news.ycombinator.com/"
             self.get(url)
             elements = self.find_elements_by_class_name('storylink')
@@ -25,5 +23,4 @@ class HackerNews2(base_scraper.Scraper):
                 elements_as_string)
         except Exception as e:
             self.log(e)
-
         self.destroy()
