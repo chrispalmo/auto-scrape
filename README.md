@@ -32,6 +32,7 @@ export AUTOSCRAPE_ADMIN_USERNAME="your_admin_username"
 export AUTOSCRAPE_ADMIN_PASSWORD="your_admin_password"
 ```
 You could also store authentication details this way for scrapers run behind a paywall.
+
 4. Start scraping: `flask run`
 
 
