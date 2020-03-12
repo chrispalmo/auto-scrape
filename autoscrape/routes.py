@@ -1,16 +1,61 @@
 from copy import copy
 from datetime import datetime
+import os
 
-from flask import render_template, url_for, flash, redirect, Response
+from flask import render_template, url_for, flash, redirect, Response, request
+from flask_login import login_user, logout_user, current_user, login_required
+
 from autoscrape import app, active_sessions, max_active_sessions, db
+from autoscrape.forms import LoginForm
 from autoscrape.helpers import db_query_output_to_csv
-from autoscrape.models import Session, LogEntry, DataEntry
+from autoscrape.models import Session, LogEntry, DataEntry, User
 
 from autoscrape.scrapers.__index__ import scrapers
 
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+
+		user = User.query.filter_by(username="admin").first()
+		
+		# Autoscrape simple-auth branch supports login from a single admin user, which is generated based on credentials provided in environment variables. 
+		username=os.environ.get("AUTOSCRAPE_ADMIN_USERNAME")
+		password=os.environ.get("AUTOSCRAPE_ADMIN_PASSWORD")
+
+		if not user:
+				# Create user
+				user = User(
+					username=username,
+					password=password
+				)
+				user = db.session.add(user)
+				db.session.commit()
+
+		if current_user.is_authenticated:
+				return redirect(url_for('dashboard'))
+		form = LoginForm()
+		print(form.username.data)
+		print(form.password.data)
+		# check if the form validated when it was submitted
+		if form.validate_on_submit():
+				if (form.username.data == username) and (form.password.data == password): 
+						login_user(user, remember=form.remember.data)
+						flash(f"Logged in as {user.username}.","success")
+						#use the "get()" dictionary method instead of [] so an error isnt thrown if the argument doesn't exist.
+						next_page = request.args.get('next')
+						return redirect(next_page) if next_page else redirect(url_for('dashboard'))
+				else:
+						flash('Login Unsuccessful. Please check username and password, and ensure AUTOSCRAPE_ADMIN_USERNAME and AUTOSCRAPE_ADMIN_PASSWORD environment variables have been set.', 'danger')
+		return render_template("login.html", title="Login", form=form)
+
+@app.route("/logout")
+def logout():
+		logout_user()
+		return redirect(url_for('login'))
+
 @app.route("/download/session_data/<int:session_id>")
 def download_session_data(session_id):
-	
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.asc())
 	csv = db_query_output_to_csv.db_query_output_to_csv(
 		query_output=data_entries, 
@@ -23,6 +68,8 @@ def download_session_data(session_id):
 
 @app.route("/download/session_history")
 def download_session_history():
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	csv = db_query_output_to_csv(
 		query_output=Session.query.all(), 
 		columns_to_exclude=["_sa_instance_state", "id"])
@@ -35,6 +82,8 @@ def download_session_history():
 
 @app.route("/")
 def home():
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	return redirect(url_for("dashboard"))
 
 
@@ -45,6 +94,9 @@ def about():
 
 @app.route("/dashboard")
 def dashboard():
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
+
 	active_sessions = Session.query.filter(Session.status=="Active").order_by(Session.date_started.desc())
 	past_sessions = Session.query.filter(Session.status!="Active").order_by(Session.date_stopped.desc())
 	return render_template('dashboard.html',
@@ -59,7 +111,9 @@ def dashboard():
 
 
 @app.route("/session_data/<int:session_id>")
-def session_data(session_id):
+def session_data(session_id):	
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	session = Session.query.get_or_404(session_id)
 	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.desc())
 	return render_template('session_data.html',
@@ -71,6 +125,8 @@ def session_data(session_id):
 
 @app.route("/log/<int:session_id>")
 def log(session_id):
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	session = Session.query.get_or_404(session_id)
 	log_entries = LogEntry.query.filter_by(session_id=session_id).order_by(LogEntry.date.desc())
 	data_entries = DataEntry.query.filter_by(session_id=session_id).order_by(DataEntry.timestamp.desc())
@@ -83,6 +139,8 @@ def log(session_id):
 
 @app.route("/create_session/<string:scraper_name>")
 def create_session(scraper_name):
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	Scraper = scrapers.get(scraper_name)
 	if Scraper:
 		if len(active_sessions) < max_active_sessions:
@@ -106,6 +164,8 @@ def create_session(scraper_name):
 
 @app.route("/abort_session/<string:session_id>")
 def abort_session(session_id):
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	try:
 		active_sessions[int(session_id)].destroy(completed=False)
 		flash(f"Scraper session {session_id} has been Aborted.","success")
@@ -116,6 +176,8 @@ def abort_session(session_id):
 
 @app.route("/delete_session_record/<string:session_id>")
 def delete_session_record(session_id):
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	try:
 		Session.query.filter_by(id=session_id).delete()
 		LogEntry.query.filter_by(session_id=session_id).delete()
@@ -129,6 +191,8 @@ def delete_session_record(session_id):
 
 @app.route("/abort_all_active_sessions")
 def abort_all_active_sessions():
+	if not current_user.is_authenticated:
+		return redirect(url_for('login'))
 	try:
 		#use shallow copy to break link back to active_sessions object
 		session_ids_to_destroy=[copy(session_id) for session_id in active_sessions.keys()]
