@@ -6,12 +6,14 @@ from threading import Thread
 from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome import options
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from autoscrape import db, active_sessions
 from autoscrape.helpers import time_breakdown 
 from autoscrape.models import Session, LogEntry, DataEntry
 from sqlalchemy import exc
 
 print(options)
+
 
 class Scraper(Thread):
 
@@ -22,9 +24,9 @@ class Scraper(Thread):
         self.active_sessions = active_sessions
         chrome_options = options.Options()  
         chrome_options.add_argument("--headless")  
-        self.driver = webdriver.Chrome(
-			'./autoscrape/chromedriver',
-			chrome_options = chrome_options)
+        self.driver = webdriver.Remote(
+            command_executor='http://chromedriver:4444/wd/hub',
+            desired_capabilities=DesiredCapabilities.CHROME)
 
         #max wait for pages to load
         self.driver.set_page_load_timeout(30)

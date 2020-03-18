@@ -1,0 +1,23 @@
+version: '3'
+services:
+  chromedriver:
+    image: selenium/standalone-chrome
+    container_name: chromedriver
+    ports:
+      - "4444:4444"
+    networks:
+      - autoscrape
+    restart: on-failure
+  autoscrape:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: autoscrape
+    ports:
+      - "5000:5000/tcp"
+    networks:
+      - autoscrape
+    restart: on-failure
+networks:
+  autoscrape:
+    driver: bridge
