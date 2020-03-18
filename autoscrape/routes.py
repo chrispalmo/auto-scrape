@@ -145,15 +145,18 @@ def create_session(scraper_name):
 	if Scraper:
 		if len(active_sessions) < max_active_sessions:
 			#Register the session in DB
-			session = Session(scraper=Scraper.__name__,description=Scraper.description())
-			db.session.add(session)
-			db.session.commit()		
-			#Create the session thread and store in process memory
-			#first create dummy entry to avoid multiple concurrent startups exceeding max session limit
-			active_sessions[session.id] = "..."
-			active_sessions[session.id] = Scraper(session.id)
-			active_sessions[session.id].start()
-			flash(f"Scraper session {session.id} has started.","success")
+			try:
+				session = Session(scraper=Scraper.__name__,description=Scraper.description())
+				db.session.add(session)
+				db.session.commit()		
+				#Create the session thread and store in process memory
+				#first create dummy entry to avoid multiple concurrent startups exceeding max session limit
+				active_sessions[session.id] = "..."
+				active_sessions[session.id] = Scraper(session.id)
+				active_sessions[session.id].start()
+				flash(f"Scraper session {session.id} has started.","success")
+			except Exception as e:
+				flash(f"Could not create scraper - {e}","danger")
 		else:
 			flash(f"Cannot create new session - All {max_active_sessions} scrapers are currently busy.", "danger")
 		return redirect(url_for("dashboard"))
