@@ -1,6 +1,10 @@
+############ Release ######################
 FROM python:3.7-alpine3.10
 ENV TZ UTC
-WORKDIR /app/autoscrape
+COPY requirements.txt .
 RUN pip install -r requirements.txt
+COPY dev.py ./
 RUN chmod +x dev.py
+
+############ Run Application ##############
 CMD ["python", "dev.py"]
