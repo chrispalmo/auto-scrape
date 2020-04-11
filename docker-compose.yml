@@ -1,10 +1,12 @@
-version: '3'
+version: '3.5'
 services:
   chromedriver:
     image: selenium/standalone-chrome
     container_name: chromedriver
     ports:
       - "4444:4444"
+    networks:
+      - autoscrape
     restart: on-failure
   autoscrape:
     build:
@@ -13,6 +15,11 @@ services:
     container_name: autoscrape
     ports:
       - "5000:5000/tcp"
+    networks:
+      - autoscrape
     env_file:
       - autoscrape.env
     restart: on-failure
+networks:
+  autoscrape:
+    name: autoscrape
