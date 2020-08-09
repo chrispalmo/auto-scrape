@@ -15,11 +15,11 @@ from autoscrape.scrapers.__index__ import scrapers
 @app.route("/login", methods=['GET', 'POST'])
 def login():
 
-		user = User.query.filter_by(username="admin").first()
-		
 		# Autoscrape simple-auth branch supports login from a single admin user, which is generated based on credentials provided in environment variables. 
 		username=os.environ.get("AUTOSCRAPE_ADMIN_USERNAME")
 		password=os.environ.get("AUTOSCRAPE_ADMIN_PASSWORD")
+
+		user = User.query.filter_by(username=username).first()
 
 		if not user:
 				# Create user
