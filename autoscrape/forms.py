@@ -15,7 +15,7 @@ class LoginForm(FlaskForm):
 			DataRequired()
 		]
 	)
-	remember = BooleanField('Remember Me')
+	remember = BooleanField(' Remember Me')
 	submit = SubmitField('Login')
 
 
