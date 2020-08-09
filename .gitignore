@@ -6,8 +6,11 @@ __pycache__
 *.db
 chromedriver
 chromedriver.exe
-# set secret env vars (LINUX)
+
+# set credentials 
 autoscrape.env
-# set secret env vars (WINDOWS)
 set_secret_env_vars.ps1
+set_secret_env_vars.sh
+
+# vim
 .swp
