@@ -63,7 +63,7 @@ class IntelligentInvestorPlusRisk(base_scraper.Scraper):
                         current_recommendation = element_class.split()[2]
                         row_dict.update({column: str(current_recommendation)})
                         # link to article
-                        article_url = self.find_element_by_xpath("//tr[{}]/td[{}]/div[2]//a".format(row_index + 1, column_index + 1)).get_attribute("href")
+                        article_url = self.find_element_by_xpath("//tr[{}]/td[{}]/div[2]/div/a".format(row_index + 1, column_index + 1)).get_attribute("href")
                         row_dict.update({"Article URL": article_url})
                     else:
                         # other columns
@@ -102,17 +102,15 @@ class IntelligentInvestorPlusRisk(base_scraper.Scraper):
                 if url:
                     self.get(url)
                     try:
-                        business_risk = self.find_element_by_xpath("//*[contains(text(), 'Business Risk')]/../span[2]").text
+                        business_risk = self.find_element_by_xpath("//*[contains(text(), 'Business Risk')]/../div[2]").text
                         row_dict.update({"Business Risk": business_risk})
                     except Exception as e:
                         row_dict.update({"Business Risk": "-"})
-                        self.log("Error scraping 'Business Risk': ", e)
                     try:
-                        price_risk = self.find_element_by_xpath("//*[contains(text(), 'Share Price Risk')]/../span[2]").text
+                        price_risk = self.find_element_by_xpath("//*[contains(text(), 'Share Price Risk')]/../div[2]").text
                         row_dict.update({"Price Risk": price_risk})
                     except:
                         row_dict.update({"Price Risk": "-"})
-                        self.log("Error scraping 'Share Price Risk': ", e)
                 else:
                     row_dict.update({"Business Risk": "-"})
                     row_dict.update({"Price Risk": "-"})
