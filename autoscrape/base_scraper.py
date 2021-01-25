@@ -3,15 +3,12 @@ from flask import request
 from inspect import currentframe
 from secrets import token_hex
 from threading import Thread
-from time import sleep
 from selenium import webdriver
 from selenium.webdriver.chrome import options
 from autoscrape import db, active_sessions
 from autoscrape.helpers import time_breakdown 
 from autoscrape.models import Session, LogEntry, DataEntry
 from sqlalchemy import exc
-
-print(options)
 
 class Scraper(Thread):
 
@@ -21,14 +18,18 @@ class Scraper(Thread):
         self.log(f"Initializing session...")
         self.active_sessions = active_sessions
         chrome_options = options.Options()  
-        chrome_options.add_argument("--headless")  
+        chrome_options.add_argument("--headless") 
+        # for headless file downloads
+        prefs = {}
+        prefs["download.prompt_for_download"] = False
+        chrome_options.add_experimental_option("prefs", prefs) 
+        # spin up chrome
         self.driver = webdriver.Chrome(
 			'./autoscrape/chromedriver',
 			chrome_options = chrome_options)
-
-        #max wait for pages to load
+        # max wait for pages to load
         self.driver.set_page_load_timeout(30)
-        #max wait for page elements to load
+        # max wait for page elements to load
         self.driver.implicitly_wait(30)
         self.log(f"Initialization complete.")
 
