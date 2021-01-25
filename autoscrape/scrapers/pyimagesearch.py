@@ -51,9 +51,9 @@ class PyImageSearch(base_scraper.Scraper):
                 download_url = download_link.get_attribute("href")
                 self.log(title)
                 self.log(download_url)
-                # download_link.click()
+                download_link.click()
                 self.save("download link", download_url, title + "; " + download_url.split("/")[-1])
-                time.sleep(1)
+                time.sleep(10)
             self.destroy()
         except Exception as e:
             self.log(e)
